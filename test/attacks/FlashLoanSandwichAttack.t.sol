@@ -34,8 +34,8 @@ contract FlashLoanSandwichAttackTest is Test {
             owner,
             1e18, // basePrice
             1e12, // slope
-            50,   // 0.5% entry tribute
-            100   // 1.0% exit tribute
+            50, // 0.5% entry tribute
+            100 // 1.0% exit tribute
         );
 
         hny.setMinter(address(curve), true);

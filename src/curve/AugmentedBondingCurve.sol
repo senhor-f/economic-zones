@@ -120,44 +120,60 @@ contract AugmentedBondingCurve is Ownable, ReentrancyGuard {
                            PRICE & FLOOR VIEWS
     //////////////////////////////////////////////////////////////*/
 
-    /// @notice Returns current spot price of $HNY on the bonding curve
-    function getSpotPrice() public view returns (uint256) {
+    /// @notice Returns current spot price of $HNY on the bonding curve (Yul optimized)
+    function getSpotPrice() public view returns (uint256 spot) {
         uint256 supply = hnyToken.totalSupply();
-        return basePrice + (supply * slope) / WAD;
-    }
-
-    /// @notice Computes the mathematical floor price = reserveBalance / totalSupply
-    /// @dev If total supply is 0 or reserve is 0, returns basePrice as fallback floor
-    function getFloorPrice() public view returns (uint256) {
-        uint256 supply = hnyToken.totalSupply();
-        if (supply == 0 || reserveBalance == 0) {
-            return basePrice;
+        uint256 base = basePrice;
+        uint256 sl = slope;
+        assembly {
+            // spot = base + (supply * slope) / 1e18
+            spot := add(base, div(mul(supply, sl), 1000000000000000000))
         }
-        return (reserveBalance * WAD) / supply;
     }
 
-    /// @notice Previews the amount of $HNY received for a given reserve deposit
+    /// @notice Computes the mathematical floor price = reserveBalance / totalSupply (Yul optimized)
+    function getFloorPrice() public view returns (uint256 floor) {
+        uint256 supply = hnyToken.totalSupply();
+        uint256 reserve = reserveBalance;
+        uint256 base = basePrice;
+        assembly {
+            switch or(iszero(supply), iszero(reserve))
+            case 1 {
+                floor := base
+            }
+            default {
+                floor := div(mul(reserve, 1000000000000000000), supply)
+            }
+        }
+    }
+
+    /// @notice Previews the amount of $HNY received for a given reserve deposit (Yul optimized)
     function previewBuy(uint256 reserveIn) public view returns (uint256 hnyOut, uint256 tribute) {
         if (reserveIn == 0) return (0, 0);
-        tribute = (reserveIn * entryTributeBps) / BPS_DENOMINATOR;
-        uint256 netReserve = reserveIn - tribute;
+        uint256 tributeBps = entryTributeBps;
+        uint256 netReserve;
+        assembly {
+            tribute := div(mul(reserveIn, tributeBps), 10000)
+            netReserve := sub(reserveIn, tribute)
+        }
 
         uint256 currentSpot = getSpotPrice();
+        uint256 sl = slope;
 
-        // Solve integral: netReserve = currentSpot * dS + (slope * dS^2) / (2 * WAD)
-        // Quadratic: (slope / (2 * WAD)) * dS^2 + currentSpot * dS - netReserve = 0
-        if (slope == 0) {
-            hnyOut = (netReserve * WAD) / currentSpot;
+        if (sl == 0) {
+            assembly {
+                hnyOut := div(mul(netReserve, 1000000000000000000), currentSpot)
+            }
         } else {
-            uint256 a = slope / 2;
+            uint256 a = sl / 2;
             uint256 b = currentSpot;
-            uint256 c = netReserve * WAD;
+            uint256 c = netReserve * 1e18;
 
-            // Quadratic formula: (-b + sqrt(b^2 + 4ac)) / (2a)
-            // dS = (-b + sqrt(b^2 + 4 * a * c)) * WAD / (2 * a)
-            uint256 discriminant = (b * b) + (4 * a * c / WAD);
+            uint256 discriminant = (b * b) + (4 * a * c / 1e18);
             uint256 sqrtD = FixedPointMathLib.sqrt(discriminant);
-            hnyOut = ((sqrtD - b) * WAD) / (2 * a);
+            assembly {
+                hnyOut := div(mul(sub(sqrtD, b), 1000000000000000000), mul(2, a))
+            }
         }
     }
 

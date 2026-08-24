@@ -18,7 +18,7 @@ contract DynamicTributeModelTest is Test {
 
         // At 500k reserve (halfway to 1M scale threshold)
         assertEq(model.getEntryTributeBps(500_000e18), 150); // 1.5%
-        assertEq(model.getExitTributeBps(500_000e18), 300);  // 3.0%
+        assertEq(model.getExitTributeBps(500_000e18), 300); // 3.0%
 
         // At 1M+ reserve: capped max tributes (2.5% entry, 5.0% exit)
         assertEq(model.getEntryTributeBps(1_000_000e18), 250);

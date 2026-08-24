@@ -55,8 +55,8 @@ contract GenesisPool is Ownable, ReentrancyGuard {
 
     // Splits in basis points
     uint256 public treasurySplitBps = 2000; // 20%
-    uint256 public polSplitBps = 1500;      // 15%
-    uint256 public curveSplitBps = 6500;    // 65%
+    uint256 public polSplitBps = 1500; // 15%
+    uint256 public curveSplitBps = 6500; // 65%
 
     mapping(address => uint256) public userDeposited;
 
@@ -76,12 +76,8 @@ contract GenesisPool is Ownable, ReentrancyGuard {
         uint256 _duration
     ) {
         if (
-            _hnyToken == address(0) ||
-            _reserveToken == address(0) ||
-            _treasuryVault == address(0) ||
-            _polManager == address(0) ||
-            _bondingCurve == address(0) ||
-            _owner == address(0)
+            _hnyToken == address(0) || _reserveToken == address(0) || _treasuryVault == address(0)
+                || _polManager == address(0) || _bondingCurve == address(0) || _owner == address(0)
         ) revert ZeroAddress();
 
         hnyToken = HNYToken(_hnyToken);

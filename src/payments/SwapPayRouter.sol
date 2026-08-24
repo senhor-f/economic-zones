@@ -56,11 +56,8 @@ contract SwapPayRouter is Ownable, ReentrancyGuard {
         address _owner
     ) {
         if (
-            _hnyToken == address(0) ||
-            _reserveToken == address(0) ||
-            _bondingCurve == address(0) ||
-            _paymentGateway == address(0) ||
-            _owner == address(0)
+            _hnyToken == address(0) || _reserveToken == address(0) || _bondingCurve == address(0)
+                || _paymentGateway == address(0) || _owner == address(0)
         ) revert ZeroAddress();
 
         hnyToken = HNYToken(_hnyToken);
@@ -80,12 +77,11 @@ contract SwapPayRouter is Ownable, ReentrancyGuard {
     /// @param reserveIn Amount of reserve token (e.g. USDC) to spend
     /// @param hnyRequired Amount of $HNY required by the project checkout
     /// @param minHnyBought Minimum acceptable $HNY minted from the curve (slippage protection)
-    function swapAndPay(
-        uint256 projectId,
-        uint256 reserveIn,
-        uint256 hnyRequired,
-        uint256 minHnyBought
-    ) external nonReentrant returns (uint256 netProjectAmount, uint256 cashback) {
+    function swapAndPay(uint256 projectId, uint256 reserveIn, uint256 hnyRequired, uint256 minHnyBought)
+        external
+        nonReentrant
+        returns (uint256 netProjectAmount, uint256 cashback)
+    {
         if (reserveIn == 0 || hnyRequired == 0) revert ZeroAmount();
 
         // 1. Pull reserve token from user
@@ -107,13 +103,6 @@ contract SwapPayRouter is Ownable, ReentrancyGuard {
             address(hnyToken).safeTransfer(msg.sender, totalHnyRefund);
         }
 
-        emit SwapAndPayExecuted(
-            projectId,
-            msg.sender,
-            reserveIn,
-            hnyBought,
-            hnyRequired,
-            cashback
-        );
+        emit SwapAndPayExecuted(projectId, msg.sender, reserveIn, hnyBought, hnyRequired, cashback);
     }
 }

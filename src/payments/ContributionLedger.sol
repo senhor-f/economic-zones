@@ -32,11 +32,7 @@ contract ContributionLedger is Ownable {
     //////////////////////////////////////////////////////////////*/
 
     event ContributionRecorded(
-        uint256 indexed projectId,
-        address indexed user,
-        uint256 volume,
-        uint256 revenue,
-        uint256 burnAmount
+        uint256 indexed projectId, address indexed user, uint256 volume, uint256 revenue, uint256 burnAmount
     );
     event ReporterStatusUpdated(address indexed reporter, bool indexed status);
     event EpochRolled(uint256 indexed newEpoch, uint256 timestamp);
@@ -87,13 +83,9 @@ contract ContributionLedger is Ownable {
                           RECORDING LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    function recordContribution(
-        uint256 projectId,
-        address user,
-        uint256 volume,
-        uint256 revenue,
-        uint256 burnAmount
-    ) external {
+    function recordContribution(uint256 projectId, address user, uint256 volume, uint256 revenue, uint256 burnAmount)
+        external
+    {
         if (!isReporter[msg.sender]) revert NotAuthorizedReporter();
 
         ProjectMetrics storage m = metrics[projectId];

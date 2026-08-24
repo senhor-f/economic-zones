@@ -31,8 +31,8 @@ contract BankRunSimulationTest is Test {
             owner,
             1e18, // basePrice = 1.0
             1e12, // slope
-            50,   // 0.5% entry tribute
-            100   // 1.0% exit tribute
+            50, // 0.5% entry tribute
+            100 // 1.0% exit tribute
         );
 
         vault = new ZoneVault(address(reserve), treasuryVault, owner);

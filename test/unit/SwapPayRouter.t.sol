@@ -38,28 +38,16 @@ contract SwapPayRouterTest is Test {
             owner,
             1e18, // basePrice = 1.0
             1e12, // slope
-            50,   // 0.5%
-            100   // 1.0%
+            50, // 0.5%
+            100 // 1.0%
         );
 
         registry = new ProjectRegistry(owner);
         ledger = new ContributionLedger(owner);
 
-        gateway = new ZonePaymentGateway(
-            address(hny),
-            address(registry),
-            address(ledger),
-            treasuryVault,
-            owner
-        );
+        gateway = new ZonePaymentGateway(address(hny), address(registry), address(ledger), treasuryVault, owner);
 
-        router = new SwapPayRouter(
-            address(hny),
-            address(reserve),
-            address(curve),
-            address(gateway),
-            owner
-        );
+        router = new SwapPayRouter(address(hny), address(reserve), address(curve), address(gateway), owner);
 
         hny.setMinter(address(curve), true);
         ledger.setReporter(address(gateway), true);
@@ -78,12 +66,8 @@ contract SwapPayRouterTest is Test {
 
         vm.startPrank(alice);
         reserve.approve(address(router), reserveToSpend);
-        (uint256 netProject, uint256 cashback) = router.swapAndPay(
-            projectId,
-            reserveToSpend,
-            hnyRequiredForCheckout,
-            hnyRequiredForCheckout
-        );
+        (uint256 netProject, uint256 cashback) =
+            router.swapAndPay(projectId, reserveToSpend, hnyRequiredForCheckout, hnyRequiredForCheckout);
         vm.stopPrank();
 
         // 1. Project receives 98% of 500 HNY = 490 HNY

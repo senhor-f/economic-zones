@@ -58,7 +58,8 @@ contract ZonePaymentGatewayTest is Test {
         assertEq(hny.balanceOf(treasuryVault), 1e18);
         assertEq(hny.balanceOf(alice), 10_000e18 - payAmount + cashback);
 
-        (uint256 vol, uint256 epochVol, uint256 rev, uint256 burned, uint256 txs, uint256 users, uint256 lastEpoch) = ledger.metrics(projectId);
+        (uint256 vol, uint256 epochVol, uint256 rev, uint256 burned, uint256 txs, uint256 users, uint256 lastEpoch) =
+            ledger.metrics(projectId);
         assertEq(vol, 100e18);
         assertEq(epochVol, 100e18);
         assertEq(rev, 1e18);

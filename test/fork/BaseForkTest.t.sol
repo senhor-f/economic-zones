@@ -52,17 +52,12 @@ contract BaseForkTest is Test {
             deployer,
             1e6, // 1 USDC (6 decimals)
             1e2, // slope
-            50,  // 0.5%
-            100  // 1.0%
+            50, // 0.5%
+            100 // 1.0%
         );
 
-        gateway = new ZonePaymentGateway(
-            address(hny),
-            address(registry),
-            address(ledger),
-            address(rebalancer),
-            deployer
-        );
+        gateway =
+            new ZonePaymentGateway(address(hny), address(registry), address(ledger), address(rebalancer), deployer);
 
         hny.setMinter(address(curve), true);
         ledger.setReporter(address(gateway), true);

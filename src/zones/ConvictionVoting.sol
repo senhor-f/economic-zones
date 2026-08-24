@@ -78,11 +78,7 @@ contract ConvictionVoting is Ownable, ReentrancyGuard {
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    constructor(
-        address _hnyToken,
-        address _treasuryVault,
-        address _owner
-    ) {
+    constructor(address _hnyToken, address _treasuryVault, address _owner) {
         if (_hnyToken == address(0) || _treasuryVault == address(0) || _owner == address(0)) {
             revert ZeroAddress();
         }

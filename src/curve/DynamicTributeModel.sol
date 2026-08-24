@@ -11,11 +11,11 @@ contract DynamicTributeModel {
     uint256 public constant BPS_DENOMINATOR = 10_000;
     uint256 public constant WAD = 1e18;
 
-    uint256 public constant BASE_ENTRY_TRIBUTE_BPS = 50;  // 0.5% at bootstrap
-    uint256 public constant MAX_ENTRY_TRIBUTE_BPS = 250;  // 2.5% cap at maturity
+    uint256 public constant BASE_ENTRY_TRIBUTE_BPS = 50; // 0.5% at bootstrap
+    uint256 public constant MAX_ENTRY_TRIBUTE_BPS = 250; // 2.5% cap at maturity
 
-    uint256 public constant BASE_EXIT_TRIBUTE_BPS = 100;  // 1.0% at bootstrap
-    uint256 public constant MAX_EXIT_TRIBUTE_BPS = 500;   // 5.0% cap at maturity
+    uint256 public constant BASE_EXIT_TRIBUTE_BPS = 100; // 1.0% at bootstrap
+    uint256 public constant MAX_EXIT_TRIBUTE_BPS = 500; // 5.0% cap at maturity
 
     uint256 public constant SCALE_THRESHOLD = 1_000_000 * WAD; // 1M reserve threshold for max tribute
 

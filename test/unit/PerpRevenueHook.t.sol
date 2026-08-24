@@ -54,7 +54,15 @@ contract PerpRevenueHookTest is Test {
         assertEq(hny.balanceOf(trader), 12e18);
 
         // Verify contribution ledger metrics
-        (uint256 vol, uint256 epochVol, uint256 rev, uint256 burnedAmount, uint256 txs, uint256 users, uint256 lastEpoch) = ledger.metrics(PROJECT_ID);
+        (
+            uint256 vol,
+            uint256 epochVol,
+            uint256 rev,
+            uint256 burnedAmount,
+            uint256 txs,
+            uint256 users,
+            uint256 lastEpoch
+        ) = ledger.metrics(PROJECT_ID);
         assertEq(vol, notionalVolume);
         assertEq(epochVol, notionalVolume);
         assertEq(rev, 18e18);

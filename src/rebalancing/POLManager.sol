@@ -39,17 +39,10 @@ contract POLManager is Ownable, ReentrancyGuard {
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    constructor(
-        address _hnyToken,
-        address _reserveToken,
-        address _treasuryVault,
-        address _owner
-    ) {
+    constructor(address _hnyToken, address _reserveToken, address _treasuryVault, address _owner) {
         if (
-            _hnyToken == address(0) ||
-            _reserveToken == address(0) ||
-            _treasuryVault == address(0) ||
-            _owner == address(0)
+            _hnyToken == address(0) || _reserveToken == address(0) || _treasuryVault == address(0)
+                || _owner == address(0)
         ) revert ZeroAddress();
 
         hnyToken = HNYToken(_hnyToken);
@@ -64,22 +57,18 @@ contract POLManager is Ownable, ReentrancyGuard {
     //////////////////////////////////////////////////////////////*/
 
     /// @notice Records deployment of protocol-owned liquidity to a verified DEX pool
-    function recordLiquidityDeployment(
-        address pool,
-        uint256 reserveAmount,
-        uint256 hnyAmount
-    ) external onlyOwner {
+    function recordLiquidityDeployment(address pool, uint256 reserveAmount, uint256 hnyAmount) external onlyOwner {
         if (pool == address(0)) revert ZeroAddress();
         isAuthorizedDexPool[pool] = true;
         emit LiquidityDeployed(pool, reserveAmount, hnyAmount);
     }
 
     /// @notice Harvests trading fees earned from the POL position and routes to Treasury & Burn
-    function harvestFees(
-        address pool,
-        uint256 reserveFee,
-        uint256 hnyFee
-    ) external nonReentrant returns (uint256 hnyBurned) {
+    function harvestFees(address pool, uint256 reserveFee, uint256 hnyFee)
+        external
+        nonReentrant
+        returns (uint256 hnyBurned)
+    {
         if (pool == address(0)) revert ZeroAddress();
 
         if (reserveFee > 0) {

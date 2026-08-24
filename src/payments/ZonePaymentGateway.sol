@@ -115,17 +115,25 @@ contract ZonePaymentGateway is Ownable, ReentrancyGuard {
 
         address payout = projectRegistry.getPayoutAddress(projectId);
 
-        // 1. Calculate fee with project tier discount
+        // 1. Calculate fee with project tier discount (Yul optimized)
         uint256 discountBps = contributionLedger.getFeeDiscountBps(projectId);
-        uint256 effectiveFeeBps = baseFeeBps > discountBps ? baseFeeBps - discountBps : 0;
-        uint256 totalFee = (grossAmount * effectiveFeeBps) / BPS_DENOMINATOR;
-        netProjectAmount = grossAmount - totalFee;
+        uint256 totalFee;
+        uint256 treasuryShare;
+        uint256 baseFee = baseFeeBps;
+        uint256 cashbackShare = cashbackShareBps;
 
-        // 2. Split fee: Treasury Share vs User Cashback Share
-        userCashback = (totalFee * cashbackShareBps) / BPS_DENOMINATOR;
-        uint256 treasuryShare = totalFee - userCashback;
+        assembly {
+            let effectiveFee := 0
+            if gt(baseFee, discountBps) {
+                effectiveFee := sub(baseFee, discountBps)
+            }
+            totalFee := div(mul(grossAmount, effectiveFee), 10000)
+            netProjectAmount := sub(grossAmount, totalFee)
+            userCashback := div(mul(totalFee, cashbackShare), 10000)
+            treasuryShare := sub(totalFee, userCashback)
+        }
 
-        // 3. Pull gross $HNY from user
+        // 2. Pull gross $HNY from user
         address(hnyToken).safeTransferFrom(msg.sender, address(this), grossAmount);
 
         // 4. Pay project net amount

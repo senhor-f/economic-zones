@@ -20,12 +20,7 @@ contract POLManagerTest is Test {
         hny = new HNYToken(owner);
         reserve = new MockERC20("USD Coin", "USDC", 18);
 
-        pol = new POLManager(
-            address(hny),
-            address(reserve),
-            treasuryVault,
-            owner
-        );
+        pol = new POLManager(address(hny), address(reserve), treasuryVault, owner);
 
         hny.setMinter(owner, true);
         vm.stopPrank();
