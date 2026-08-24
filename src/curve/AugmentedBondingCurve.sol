@@ -317,6 +317,13 @@ contract AugmentedBondingCurve is Ownable, ReentrancyGuard {
         emit TributesUpdated(_entryTributeBps, _exitTributeBps);
     }
 
+    /// @notice Ingests external yield directly into reserve backing, strictly increasing the Floor Price
+    function depositFloorYield(uint256 amount) external nonReentrant {
+        if (amount == 0) revert ZeroAmount();
+        reserveToken.safeTransferFrom(msg.sender, address(this), amount);
+        reserveBalance += amount;
+    }
+
     /// @notice Updates Treasury Vault recipient
     function setTreasuryVault(address _treasuryVault) external onlyOwner {
         if (_treasuryVault == address(0)) revert ZeroAddress();
