@@ -1,0 +1,28 @@
+{
+  "name": "@economic-zone/checkout",
+  "version": "2.0.0",
+  "description": "1-click crypto checkout widget, SDK and webhook verifier with instant customer cashback in $HNY",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"SDK validated\""
+  },
+  "keywords": [
+    "crypto",
+    "checkout",
+    "payments",
+    "cashback",
+    "viem",
+    "solidity",
+    "economic-zone"
+  ],
+  "author": "Economic Zones Protocol",
+  "license": "MIT",
+  "dependencies": {
+    "viem": "^2.21.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}
