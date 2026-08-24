@@ -58,13 +58,14 @@ contract ZonePaymentGatewayTest is Test {
         assertEq(hny.balanceOf(treasuryVault), 1e18);
         assertEq(hny.balanceOf(alice), 10_000e18 - payAmount + cashback);
 
-        // Verify contribution ledger attribution
-        (uint256 vol, uint256 rev, uint256 burned, uint256 txs, uint256 users) = ledger.metrics(projectId);
+        (uint256 vol, uint256 epochVol, uint256 rev, uint256 burned, uint256 txs, uint256 users, uint256 lastEpoch) = ledger.metrics(projectId);
         assertEq(vol, 100e18);
+        assertEq(epochVol, 100e18);
         assertEq(rev, 1e18);
         assertEq(burned, 0);
         assertEq(txs, 1);
         assertEq(users, 1);
+        assertEq(lastEpoch, 1);
     }
 
     function test_ProjectTierDiscount() public {
