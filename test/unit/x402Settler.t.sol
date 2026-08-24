@@ -31,19 +31,9 @@ contract x402SettlerTest is Test {
         registry = new ProjectRegistry(owner);
         ledger = new ContributionLedger(owner);
 
-        gateway = new ZonePaymentGateway(
-            address(hny),
-            address(registry),
-            address(ledger),
-            treasuryVault,
-            owner
-        );
+        gateway = new ZonePaymentGateway(address(hny), address(registry), address(ledger), treasuryVault, owner);
 
-        settler = new x402Settler(
-            address(hny),
-            address(gateway),
-            owner
-        );
+        settler = new x402Settler(address(hny), address(gateway), owner);
 
         hny.setMinter(owner, true);
         ledger.setReporter(address(gateway), true);
@@ -63,20 +53,9 @@ contract x402SettlerTest is Test {
         uint256 deadline = block.timestamp + 1 hours;
 
         // 1. Agent signs EIP-712 payment authorization
-        bytes32 structHash = keccak256(
-            abi.encode(
-                settler.TYPEHASH(),
-                agent,
-                projectId,
-                paymentAmount,
-                nonce,
-                deadline
-            )
-        );
+        bytes32 structHash = keccak256(abi.encode(settler.TYPEHASH(), agent, projectId, paymentAmount, nonce, deadline));
 
-        bytes32 digest = keccak256(
-            abi.encodePacked("\x19\x01", settler.DOMAIN_SEPARATOR(), structHash)
-        );
+        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", settler.DOMAIN_SEPARATOR(), structHash));
 
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(agentPrivateKey, digest);
         bytes memory signature = abi.encodePacked(r, s, v);
@@ -89,11 +68,7 @@ contract x402SettlerTest is Test {
         vm.prank(serverApi);
         (uint256 netProject, uint256 cashback) = settler.settlePayment(
             x402Settler.PaymentAuthorization({
-                agent: agent,
-                projectId: projectId,
-                amount: paymentAmount,
-                nonce: nonce,
-                deadline: deadline
+                agent: agent, projectId: projectId, amount: paymentAmount, nonce: nonce, deadline: deadline
             }),
             signature
         );

@@ -47,11 +47,7 @@ contract TreasuryYieldVault is ERC4626, Ownable, ReentrancyGuard {
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    constructor(
-        address _assetToken,
-        address _bondingCurve,
-        address _owner
-    ) {
+    constructor(address _assetToken, address _bondingCurve, address _owner) {
         if (_assetToken == address(0) || _bondingCurve == address(0) || _owner == address(0)) {
             revert ZeroAddress();
         }

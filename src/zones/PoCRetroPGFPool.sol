@@ -70,11 +70,7 @@ contract PoCRetroPGFPool is Ownable, ReentrancyGuard {
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    constructor(
-        address _fundingToken,
-        address _ledger,
-        address _owner
-    ) {
+    constructor(address _fundingToken, address _ledger, address _owner) {
         if (_fundingToken == address(0) || _ledger == address(0) || _owner == address(0)) {
             revert ZeroAddress();
         }
@@ -90,12 +86,11 @@ contract PoCRetroPGFPool is Ownable, ReentrancyGuard {
     //////////////////////////////////////////////////////////////*/
 
     /// @notice Starts a new Proof-of-Commerce RetroPGF round
-    function startRound(
-        uint256 poolAmount,
-        uint256 duration,
-        uint256[] calldata projectIds,
-        address[] calldata payouts
-    ) external onlyOwner nonReentrant {
+    function startRound(uint256 poolAmount, uint256 duration, uint256[] calldata projectIds, address[] calldata payouts)
+        external
+        onlyOwner
+        nonReentrant
+    {
         if (block.timestamp < roundEndTime) revert RoundActive();
         if (projectIds.length == 0 || projectIds.length != payouts.length) revert NoProjects();
 
@@ -109,11 +104,7 @@ contract PoCRetroPGFPool is Ownable, ReentrancyGuard {
             uint256 pid = projectIds[i];
             roundProjectIds.push(pid);
             proposals[pid] = ProjectProposal({
-                projectId: pid,
-                payout: payouts[i],
-                sumOfSqrtVotes: 0,
-                directDonations: 0,
-                isClaimed: false
+                projectId: pid, payout: payouts[i], sumOfSqrtVotes: 0, directDonations: 0, isClaimed: false
             });
         }
 
@@ -148,8 +139,8 @@ contract PoCRetroPGFPool is Ownable, ReentrancyGuard {
         ContributionLedger.ProjectTier tier = ledger.getProjectTier(projectId);
 
         if (tier == ContributionLedger.ProjectTier.PLATINUM) return 20000; // 2.0x boost
-        if (tier == ContributionLedger.ProjectTier.GOLD) return 15000;     // 1.5x boost
-        if (tier == ContributionLedger.ProjectTier.SILVER) return 12500;   // 1.25x boost
+        if (tier == ContributionLedger.ProjectTier.GOLD) return 15000; // 1.5x boost
+        if (tier == ContributionLedger.ProjectTier.SILVER) return 12500; // 1.25x boost
         return 10000; // 1.0x baseline
     }
 

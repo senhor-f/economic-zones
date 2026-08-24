@@ -23,22 +23,9 @@ contract TreasuryYieldVaultTest is Test {
         hny = new HNYToken(owner);
         usdc = new MockERC20("USD Coin", "USDC", 18);
 
-        curve = new AugmentedBondingCurve(
-            address(hny),
-            address(usdc),
-            treasuryVault,
-            owner,
-            1e18,
-            1e12,
-            50,
-            100
-        );
+        curve = new AugmentedBondingCurve(address(hny), address(usdc), treasuryVault, owner, 1e18, 1e12, 50, 100);
 
-        vault = new TreasuryYieldVault(
-            address(usdc),
-            address(curve),
-            owner
-        );
+        vault = new TreasuryYieldVault(address(usdc), address(curve), owner);
 
         hny.setMinter(address(curve), true);
         vm.stopPrank();

@@ -41,12 +41,7 @@ contract FloorDripper is Ownable, ReentrancyGuard {
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    constructor(
-        address _reserveToken,
-        address _bondingCurve,
-        uint256 _initialDripRatePerSecond,
-        address _owner
-    ) {
+    constructor(address _reserveToken, address _bondingCurve, uint256 _initialDripRatePerSecond, address _owner) {
         if (_reserveToken == address(0) || _bondingCurve == address(0) || _owner == address(0)) {
             revert ZeroAddress();
         }

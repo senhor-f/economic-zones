@@ -26,11 +26,7 @@ contract PoCRetroPGFPoolTest is Test {
         ledger = new ContributionLedger(owner);
         ledger.setReporter(reporter, true);
 
-        pool = new PoCRetroPGFPool(
-            address(fundingToken),
-            address(ledger),
-            owner
-        );
+        pool = new PoCRetroPGFPool(address(fundingToken), address(ledger), owner);
 
         fundingToken.mint(owner, 100_000e18);
         fundingToken.mint(voter, 10_000e18);

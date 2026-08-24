@@ -21,11 +21,7 @@ contract MilestoneFutarchyTest is Test {
         usdc = new MockERC20("USD Coin", "USDC", 18);
         fundingToken = new MockERC20("HNY Token", "HNY", 18);
 
-        futarchy = new MilestoneFutarchy(
-            address(usdc),
-            treasuryVault,
-            owner
-        );
+        futarchy = new MilestoneFutarchy(address(usdc), treasuryVault, owner);
         vm.stopPrank();
 
         fundingToken.mint(owner, 100_000e18);

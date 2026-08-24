@@ -29,12 +29,7 @@ contract CitizenAttestor is Ownable {
                                  EVENTS
     //////////////////////////////////////////////////////////////*/
 
-    event CitizenAttested(
-        address indexed citizen,
-        bytes32 indexed attestationUID,
-        uint8 tier,
-        uint256 points
-    );
+    event CitizenAttested(address indexed citizen, bytes32 indexed attestationUID, uint8 tier, uint256 points);
 
     /*//////////////////////////////////////////////////////////////
                                  ERRORS
@@ -57,12 +52,7 @@ contract CitizenAttestor is Ownable {
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    constructor(
-        address _eas,
-        address _tierManager,
-        bytes32 _schemaUID,
-        address _owner
-    ) {
+    constructor(address _eas, address _tierManager, bytes32 _schemaUID, address _owner) {
         if (_eas == address(0) || _tierManager == address(0) || _owner == address(0)) {
             revert ZeroAddress();
         }

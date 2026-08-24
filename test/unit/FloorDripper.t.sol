@@ -35,12 +35,7 @@ contract FloorDripperTest is Test {
             100
         );
 
-        dripper = new FloorDripper(
-            address(reserve),
-            address(curve),
-            DRIP_RATE,
-            owner
-        );
+        dripper = new FloorDripper(address(reserve), address(curve), DRIP_RATE, owner);
 
         hny.setMinter(address(curve), true);
         vm.stopPrank();

@@ -39,7 +39,9 @@ contract SubscriptionManager is Ownable, ReentrancyGuard {
                                  EVENTS
     //////////////////////////////////////////////////////////////*/
 
-    event PlanCreated(uint256 indexed planId, uint256 indexed projectId, uint256 pricePerPeriod, uint256 periodDuration);
+    event PlanCreated(
+        uint256 indexed planId, uint256 indexed projectId, uint256 pricePerPeriod, uint256 periodDuration
+    );
     event PlanStatusUpdated(uint256 indexed planId, bool isActive);
     event Subscribed(uint256 indexed subscriptionId, uint256 indexed planId, address indexed subscriber);
     event SubscriptionCanceled(uint256 indexed subscriptionId, address indexed subscriber);
@@ -83,17 +85,10 @@ contract SubscriptionManager is Ownable, ReentrancyGuard {
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    constructor(
-        address _hnyToken,
-        address _projectRegistry,
-        address _paymentGateway,
-        address _owner
-    ) {
+    constructor(address _hnyToken, address _projectRegistry, address _paymentGateway, address _owner) {
         if (
-            _hnyToken == address(0) ||
-            _projectRegistry == address(0) ||
-            _paymentGateway == address(0) ||
-            _owner == address(0)
+            _hnyToken == address(0) || _projectRegistry == address(0) || _paymentGateway == address(0)
+                || _owner == address(0)
         ) revert ZeroAddress();
 
         hnyToken = HNYToken(_hnyToken);
@@ -108,11 +103,10 @@ contract SubscriptionManager is Ownable, ReentrancyGuard {
     //////////////////////////////////////////////////////////////*/
 
     /// @notice Creates a new subscription tier for a registered project
-    function createPlan(
-        uint256 projectId,
-        uint256 pricePerPeriod,
-        uint256 periodDuration
-    ) external returns (uint256 planId) {
+    function createPlan(uint256 projectId, uint256 pricePerPeriod, uint256 periodDuration)
+        external
+        returns (uint256 planId)
+    {
         if (pricePerPeriod == 0 || periodDuration == 0) revert ZeroAmount();
 
         address payout = projectRegistry.getPayoutAddress(projectId);
@@ -120,10 +114,7 @@ contract SubscriptionManager is Ownable, ReentrancyGuard {
 
         planId = ++planCount;
         plans[planId] = Plan({
-            projectId: projectId,
-            pricePerPeriod: pricePerPeriod,
-            periodDuration: periodDuration,
-            isActive: true
+            projectId: projectId, pricePerPeriod: pricePerPeriod, periodDuration: periodDuration, isActive: true
         });
 
         emit PlanCreated(planId, projectId, pricePerPeriod, periodDuration);
@@ -195,11 +186,10 @@ contract SubscriptionManager is Ownable, ReentrancyGuard {
         emit SubscriptionCanceled(subId, sub.subscriber);
     }
 
-    function _executePayment(
-        uint256 subId,
-        Plan storage plan,
-        address subscriber
-    ) internal returns (uint256 netProject, uint256 cashback) {
+    function _executePayment(uint256 subId, Plan storage plan, address subscriber)
+        internal
+        returns (uint256 netProject, uint256 cashback)
+    {
         uint256 amount = plan.pricePerPeriod;
 
         // 1. Pull payment from subscriber
@@ -215,12 +205,7 @@ contract SubscriptionManager is Ownable, ReentrancyGuard {
         }
 
         emit BillingProcessed(
-            subId,
-            subscriptions[subId].planId,
-            subscriber,
-            subscriptions[subId].periodsBilled,
-            amount,
-            cashback
+            subId, subscriptions[subId].planId, subscriber, subscriptions[subId].periodsBilled, amount, cashback
         );
     }
 }

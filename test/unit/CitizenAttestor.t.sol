@@ -30,17 +30,9 @@ contract CitizenAttestorTest is Test {
         hny = new HNYToken(owner);
         eas = new MockEAS();
 
-        tierManager = new CitizenTierManager(
-            address(hny),
-            owner
-        );
+        tierManager = new CitizenTierManager(address(hny), owner);
 
-        attestor = new CitizenAttestor(
-            address(eas),
-            address(tierManager),
-            SCHEMA_UID,
-            owner
-        );
+        attestor = new CitizenAttestor(address(eas), address(tierManager), SCHEMA_UID, owner);
 
         hny.setMinter(owner, true);
         vm.stopPrank();

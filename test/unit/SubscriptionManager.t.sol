@@ -29,20 +29,9 @@ contract SubscriptionManagerTest is Test {
         registry = new ProjectRegistry(owner);
         ledger = new ContributionLedger(owner);
 
-        gateway = new ZonePaymentGateway(
-            address(hny),
-            address(registry),
-            address(ledger),
-            treasuryVault,
-            owner
-        );
+        gateway = new ZonePaymentGateway(address(hny), address(registry), address(ledger), treasuryVault, owner);
 
-        subManager = new SubscriptionManager(
-            address(hny),
-            address(registry),
-            address(gateway),
-            owner
-        );
+        subManager = new SubscriptionManager(address(hny), address(registry), address(gateway), owner);
 
         hny.setMinter(owner, true);
         ledger.setReporter(address(gateway), true);

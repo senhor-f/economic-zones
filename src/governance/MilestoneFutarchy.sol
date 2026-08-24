@@ -80,11 +80,7 @@ contract MilestoneFutarchy is Ownable, ReentrancyGuard {
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    constructor(
-        address _bettingToken,
-        address _treasuryVault,
-        address _owner
-    ) {
+    constructor(address _bettingToken, address _treasuryVault, address _owner) {
         if (_bettingToken == address(0) || _treasuryVault == address(0) || _owner == address(0)) {
             revert ZeroAddress();
         }
@@ -127,13 +123,7 @@ contract MilestoneFutarchy is Ownable, ReentrancyGuard {
         // Pull grant funds into escrow from caller/Treasury
         fundingToken.safeTransferFrom(msg.sender, address(this), trancheAmount);
 
-        emit MilestoneCreated(
-            milestoneId,
-            grantId,
-            beneficiary,
-            trancheAmount,
-            block.timestamp + votingDuration
-        );
+        emit MilestoneCreated(milestoneId, grantId, beneficiary, trancheAmount, block.timestamp + votingDuration);
     }
 
     /// @notice Predicts whether the milestone will be successfully delivered (YES or NO)

@@ -71,11 +71,7 @@ contract x402Settler is Ownable, ReentrancyGuard {
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    constructor(
-        address _hnyToken,
-        address _paymentGateway,
-        address _owner
-    ) {
+    constructor(address _hnyToken, address _paymentGateway, address _owner) {
         if (_hnyToken == address(0) || _paymentGateway == address(0) || _owner == address(0)) {
             revert ZeroAddress();
         }
@@ -101,30 +97,21 @@ contract x402Settler is Ownable, ReentrancyGuard {
     //////////////////////////////////////////////////////////////*/
 
     /// @notice Settles an HTTP 402 challenge using a signed EIP-712 PaymentAuthorization
-    function settlePayment(
-        PaymentAuthorization calldata auth,
-        bytes calldata signature
-    ) external nonReentrant returns (uint256 netProjectAmount, uint256 cashback) {
+    function settlePayment(PaymentAuthorization calldata auth, bytes calldata signature)
+        external
+        nonReentrant
+        returns (uint256 netProjectAmount, uint256 cashback)
+    {
         if (auth.agent == address(0)) revert ZeroAddress();
         if (auth.amount == 0) revert ZeroAmount();
         if (block.timestamp > auth.deadline) revert SignatureExpired();
         if (usedNonces[auth.agent][auth.nonce]) revert NonceAlreadyUsed();
 
         // 1. Verify EIP-712 Signature
-        bytes32 structHash = keccak256(
-            abi.encode(
-                TYPEHASH,
-                auth.agent,
-                auth.projectId,
-                auth.amount,
-                auth.nonce,
-                auth.deadline
-            )
-        );
+        bytes32 structHash =
+            keccak256(abi.encode(TYPEHASH, auth.agent, auth.projectId, auth.amount, auth.nonce, auth.deadline));
 
-        bytes32 digest = keccak256(
-            abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, structHash)
-        );
+        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, structHash));
 
         address signer = digest.recover(signature);
         if (signer != auth.agent) revert InvalidSignature();
@@ -143,13 +130,6 @@ contract x402Settler is Ownable, ReentrancyGuard {
             address(hnyToken).safeTransfer(auth.agent, cashback);
         }
 
-        emit x402PaymentSettled(
-            auth.agent,
-            auth.projectId,
-            auth.amount,
-            auth.nonce,
-            netProjectAmount,
-            cashback
-        );
+        emit x402PaymentSettled(auth.agent, auth.projectId, auth.amount, auth.nonce, netProjectAmount, cashback);
     }
 }

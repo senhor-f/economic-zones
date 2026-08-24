@@ -77,11 +77,8 @@ contract ProjectCollateral is Ownable, ReentrancyGuard {
         address _owner
     ) {
         if (
-            _collateralToken == address(0) ||
-            _ledger == address(0) ||
-            _registry == address(0) ||
-            _treasuryVault == address(0) ||
-            _owner == address(0)
+            _collateralToken == address(0) || _ledger == address(0) || _registry == address(0)
+                || _treasuryVault == address(0) || _owner == address(0)
         ) revert ZeroAddress();
 
         collateralToken = _collateralToken;
