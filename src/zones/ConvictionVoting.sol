@@ -8,8 +8,7 @@ import {FixedPointMathLib} from "solady/utils/FixedPointMathLib.sol";
 import {HNYToken} from "../token/HNYToken.sol";
 
 /// @title ConvictionVoting
-/// @notice Continuous conviction voting for grants, public goods, and operational spending.
-/// @dev Signals accumulate conviction over time without token locking, executing when threshold is reached.
+/// @notice Continuous conviction voting with strict anti-double-voting validation across multiple proposals.
 contract ConvictionVoting is Ownable, ReentrancyGuard {
     using SafeTransferLib for address;
     using FixedPointMathLib for uint256;
@@ -61,7 +60,7 @@ contract ConvictionVoting is Ownable, ReentrancyGuard {
     //////////////////////////////////////////////////////////////*/
 
     uint256 public constant WAD = 1e18;
-    uint256 public constant ALPHA = 9e17; // 0.90 decay factor per block/unit
+    uint256 public constant ALPHA = 9e17; // 0.90 decay factor per block
 
     /*//////////////////////////////////////////////////////////////
                                  STORAGE
@@ -73,12 +72,17 @@ contract ConvictionVoting is Ownable, ReentrancyGuard {
     uint256 public proposalCount;
     mapping(uint256 => Proposal) public proposals;
     mapping(uint256 => mapping(address => uint256)) public userStake;
+    mapping(address => uint256) public totalUserStakedAcrossProposals;
 
     /*//////////////////////////////////////////////////////////////
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    constructor(address _hnyToken, address _treasuryVault, address _owner) {
+    constructor(
+        address _hnyToken,
+        address _treasuryVault,
+        address _owner
+    ) {
         if (_hnyToken == address(0) || _treasuryVault == address(0) || _owner == address(0)) {
             revert ZeroAddress();
         }
@@ -117,15 +121,21 @@ contract ConvictionVoting is Ownable, ReentrancyGuard {
         emit ProposalCreated(proposalId, beneficiary, fundingToken, requestedAmount, metadataURI);
     }
 
-    /// @notice Signals voting weight for a proposal based on $HNY balance
+    /// @notice Signals voting weight for a proposal. Prevents double-voting across concurrent proposals.
     function stake(uint256 proposalId, uint256 amount) external {
         Proposal storage prop = proposals[proposalId];
         if (prop.isExecuted || prop.isCanceled) revert ProposalNotActive();
-        if (hnyToken.balanceOf(msg.sender) < amount) revert InsufficientBalance();
 
         _updateConviction(proposalId);
 
         uint256 prevStake = userStake[proposalId][msg.sender];
+        uint256 currentBalance = hnyToken.balanceOf(msg.sender);
+
+        uint256 newTotalStake = totalUserStakedAcrossProposals[msg.sender] - prevStake + amount;
+        if (newTotalStake > currentBalance) revert InsufficientBalance();
+
+        totalUserStakedAcrossProposals[msg.sender] = newTotalStake;
+
         if (amount > prevStake) {
             prop.stakedTokens += (amount - prevStake);
         } else {
@@ -142,7 +152,6 @@ contract ConvictionVoting is Ownable, ReentrancyGuard {
         uint256 totalWeight = hnyToken.totalSupply();
         if (totalWeight == 0) return type(uint256).max;
 
-        // Threshold scales with requested amount relative to total vault pool
         return (totalWeight * prop.requestedAmount) / (prop.requestedAmount + 10_000e18);
     }
 
@@ -154,7 +163,6 @@ contract ConvictionVoting is Ownable, ReentrancyGuard {
         uint256 blockDelta = block.number - prop.blockLast;
         if (blockDelta == 0) return prop.convictionLast;
 
-        // Continuous conviction decay & accumulation formula
         uint256 alphaDecay = FixedPointMathLib.rpow(ALPHA, blockDelta, WAD);
         return (prop.convictionLast * alphaDecay) / WAD + prop.stakedTokens * (WAD - alphaDecay) / WAD;
     }
@@ -183,7 +191,7 @@ contract ConvictionVoting is Ownable, ReentrancyGuard {
         emit ProposalExecuted(proposalId, prop.requestedAmount);
     }
 
-    /// @notice Cancels a proposal (admin/guardian emergency trigger)
+    /// @notice Cancels a proposal
     function cancelProposal(uint256 proposalId) external onlyOwner {
         Proposal storage prop = proposals[proposalId];
         prop.isCanceled = true;
