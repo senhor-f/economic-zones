@@ -1,12 +1,18 @@
 {
   "name": "@economic-zone/checkout",
-  "version": "2.0.0",
-  "description": "1-click crypto checkout widget, SDK and webhook verifier with instant customer cashback in $HNY",
+  "version": "2.1.0",
+  "description": "Comprehensive TypeScript SDK and 1-click checkout client for Economic Zones Protocol ($HNY v2)",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
-    "build": "tsc",
-    "test": "echo \"SDK validated\""
+    "build:abis": "node scripts/buildAbis.mjs",
+    "build": "bun run build:abis && tsc && cp src/abis.json src/abis.jsonl dist/",
+    "test": "bun test"
   },
   "keywords": [
     "crypto",
@@ -15,7 +21,9 @@
     "cashback",
     "viem",
     "solidity",
-    "economic-zone"
+    "economic-zone",
+    "eip-4844",
+    "xerc20"
   ],
   "author": "Economic Zones Protocol",
   "license": "MIT",
@@ -23,6 +31,7 @@
     "viem": "^2.21.0"
   },
   "devDependencies": {
+    "@types/node": "^20.0.0",
     "typescript": "^5.5.0"
   }
 }

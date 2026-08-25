@@ -1,0 +1,114 @@
+name: Release SDK
+
+# Tag: sdk-v* — publishes @economic-zone/checkout to GitHub Packages / npm
+# and creates a GitHub Release with full usage instructions.
+
+on:
+  push:
+    tags:
+      - "sdk-v*"
+
+jobs:
+  release-sdk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    defaults:
+      run:
+        working-directory: pkg/checkout
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.2.3
+
+      - name: Forge build (generates out/ for the ABI manifest)
+        working-directory: .
+        run: forge build
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@economic-zone"
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG#sdk-v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Validate tag matches package.json version
+        run: |
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          if [ "$PKG_VERSION" != "${{ steps.version.outputs.version }}" ]; then
+            echo "::error::package.json version ($PKG_VERSION) doesn't match tag (${{ steps.version.outputs.version }}) — bump package.json and re-tag"
+            exit 1
+          fi
+          echo "Version: $PKG_VERSION matches tag ✓"
+
+      - name: Install SDK dependencies
+        run: bun install
+
+      - name: Regenerate ABI manifest & Build SDK
+        run: bun run build
+
+      - name: Test SDK
+        run: bun test
+
+      - name: Publish to GitHub Packages
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          if npm view "@economic-zone/checkout@${VERSION}" version >/dev/null 2>&1; then
+            echo "::notice::@economic-zone/checkout@${VERSION} is already published — skipping (idempotent release)"
+          else
+            npm publish
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          VERSION="${{ steps.version.outputs.version }}"
+          gh release create "$TAG" \
+            --title "economic-zone-sdk v${VERSION}" \
+            --notes "## Install
+
+          Published to GitHub Packages:
+
+          \`\`\`bash
+          bun add @economic-zone/checkout@${VERSION}
+          # or
+          npm install @economic-zone/checkout@${VERSION}
+          \`\`\`
+
+          \`\`\`ts
+          import { ZoneCheckoutClient, ZoneClient } from \"@economic-zone/checkout\";
+
+          // 1. Prepare 1-Click Checkout with Instant 1% Cashback
+          const client = new ZoneCheckoutClient(\"0xSwapPayRouterAddress...\");
+          const payload = client.prepare1ClickPayment(
+            1n,             // projectId
+            100_000000n,    // 100 USDC in
+            50_000000000000000000n, // 50 HNY required
+            50n             // 0.5% max slippage
+          );
+
+          // 2. Decode on-chain packed bytes32 version
+          const info = ZoneClient.decodeProtocolVersion(rawVersionTag);
+          console.log(info.contractName, info.major, info.minor, info.patch);
+          \`\`\`"

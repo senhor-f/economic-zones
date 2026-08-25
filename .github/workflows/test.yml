@@ -1,35 +1,67 @@
 name: CI
 
-permissions: {}
-
 on:
   push:
   pull_request:
   workflow_dispatch:
 
+env:
+  FOUNDRY_PROFILE: ci
+
 jobs:
   check:
-    name: Foundry project
+    strategy:
+      fail-fast: true
+
+    name: Build & Test Suite
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
-          persist-credentials: false
           submodules: recursive
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.2.3
 
-      - name: Show Forge version
-        run: forge --version
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Cache Bun installs
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            pkg/checkout/node_modules
+          key: bun-${{ runner.os }}-${{ hashFiles('pkg/checkout/bun.lock', 'pkg/checkout/package.json') }}
+
+      - name: Cache Foundry build (out/, cache/)
+        uses: actions/cache@v4
+        with:
+          path: |
+            out
+            cache
+          key: forge-${{ runner.os }}-v1.2.3-${{ hashFiles('src/**/*.sol', 'test/**/*.sol', 'script/**/*.sol', 'foundry.toml') }}
 
       - name: Run Forge fmt
         run: forge fmt --check
+        id: fmt
 
       - name: Run Forge build
         run: forge build --sizes
+        id: build
 
-      - name: Run Forge tests
+      - name: Run Forge test suite (60 tests across 41 suites)
         run: forge test -vvv
+        id: test
+
+      - name: Build & Test TypeScript SDK (@economic-zone/checkout)
+        run: |
+          cd pkg/checkout
+          bun install
+          bun run build
+          bun test
+        id: sdk-tests

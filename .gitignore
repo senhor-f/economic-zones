@@ -22,3 +22,9 @@ docs/
 # Parallel worktrees
 .wwtt/
 
+# Node / Bun
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+
