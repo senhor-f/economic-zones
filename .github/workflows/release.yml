@@ -2,7 +2,7 @@ name: Release Protocol & SDK
 
 # Unified Release Trigger: v*
 # Builds contracts, packages TypeScript SDK, generates cryptographic SHA-256 checksums,
-# publishes @<owner>/checkout to GitHub Packages, and creates a single unified GitHub Release.
+# publishes @<owner>/checkout to GitHub Packages, and creates/updates an idempotent GitHub Release.
 
 on:
   push:
@@ -111,7 +111,7 @@ jobs:
           echo "core_sha=$CORE_SHA" >> "$GITHUB_OUTPUT"
           echo "sdk_sha=$SDK_SHA" >> "$GITHUB_OUTPUT"
 
-      - name: Create Unified GitHub Release
+      - name: Create or Update Idempotent GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -122,59 +122,71 @@ jobs:
           CORE_SHA="${{ steps.artifacts.outputs.core_sha }}"
           SDK_SHA="${{ steps.artifacts.outputs.sdk_sha }}"
 
-          gh release create "$TAG" \
-            "$CORE_TARBALL" \
-            "$SDK_TARBALL" \
-            "CHECKSUMS-SHA256.txt" \
-            "abis.json" \
-            "abis.jsonl" \
-            ".gas-snapshot" \
-            --title "Economic Zones Protocol & SDK ${TAG}" \
-            --notes "## Economic Zones Protocol & SDK ${TAG}
+          # Write release notes markdown
+          cat << 'EOF' > release_notes.md
+          ## Economic Zones Protocol & SDK ${{ steps.version.outputs.tag }}
 
           Sovereign On-Chain Economies with an Unbreachable Floor Price, AI Agent Micropayments (x402), SaaS Subscriptions, Liquid Staking, and Yield-Backed Treasury Bóvedas.
 
           ---
 
-          ### 📦 TypeScript SDK Installation
+          ### TypeScript SDK Installation
 
           Published to GitHub Packages:
 
-          \`\`\`bash
-          bun add @${{ github.repository_owner }}/checkout@${VERSION}
+          ```bash
+          bun add @${{ github.repository_owner }}/checkout@${{ steps.version.outputs.version }}
           # or
-          npm install @${{ github.repository_owner }}/checkout@${VERSION}
-          \`\`\`
+          npm install @${{ github.repository_owner }}/checkout@${{ steps.version.outputs.version }}
+          ```
 
-          \`\`\`ts
-          import { ZoneCheckoutClient, ZoneClient } from \"@${{ github.repository_owner }}/checkout\";
+          ```ts
+          import { ZoneCheckoutClient, ZoneClient } from "@${{ github.repository_owner }}/checkout";
 
-          const client = new ZoneCheckoutClient(\"0xSwapPayRouterAddress...\");
+          const client = new ZoneCheckoutClient("0xSwapPayRouterAddress...");
           const payload = client.prepare1ClickPayment(
             1n,             // projectId
             100_000000n,    // 100 USDC in
             50_000000000000000000n, // 50 HNY required
             50n             // 0.5% max slippage
           );
-          \`\`\`
+          ```
 
           ---
 
-          ### 🔒 Cryptographic Checksums (SHA-256)
+          ### Cryptographic Checksums (SHA-256)
 
           | Artifact | SHA-256 Hash |
           | :--- | :--- |
-          | \`$CORE_TARBALL\` | \`$CORE_SHA\` |
-          | \`$SDK_TARBALL\` | \`$SDK_SHA\` |
+          | `${{ steps.artifacts.outputs.core_tarball }}` | `${{ steps.artifacts.outputs.core_sha }}` |
+          | `${{ steps.sdk.outputs.tarball }}` | `${{ steps.artifacts.outputs.sdk_sha }}` |
 
-          \`\`\`bash
+          ```bash
           # Verify integrity
           sha256sum -c CHECKSUMS-SHA256.txt
-          \`\`\`
+          ```
 
           ---
 
-          ### 🏛️ Included Modules
+          ### Included Modules
           - **Ethereum L1**: Augmented Bonding Curve ($HNY), Treasury Yield Vaults (ERC-4626), Floor Dripper, xHNY Lockbox (xERC20), EIP-4844 KZG Blob Verifier (0x0A).
           - **Base L2**: 1-Click Drop-in Checkout (+1% Instant Cashback), Continuous Payroll Streaming, Revenue Splits with Auto-Stake, veHNY Savings Lockers.
-          - **Testing**: 60/60 passing Foundry suites (32k invariant fuzzing, 100% bank runs, live Base fork)."
+          - **Testing**: 60/60 passing Foundry suites (32k invariant fuzzing, 100% bank runs, live Base fork).
+          EOF
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists — updating assets and notes with --clobber..."
+            gh release upload "$TAG" "$CORE_TARBALL" "$SDK_TARBALL" "CHECKSUMS-SHA256.txt" "abis.json" "abis.jsonl" ".gas-snapshot" --clobber
+            gh release edit "$TAG" --title "Economic Zones Protocol & SDK ${TAG}" --notes-file release_notes.md
+          else
+            echo "Creating new release $TAG..."
+            gh release create "$TAG" \
+              "$CORE_TARBALL" \
+              "$SDK_TARBALL" \
+              "CHECKSUMS-SHA256.txt" \
+              "abis.json" \
+              "abis.jsonl" \
+              ".gas-snapshot" \
+              --title "Economic Zones Protocol & SDK ${TAG}" \
+              --notes-file release_notes.md
+          fi
