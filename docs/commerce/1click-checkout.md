@@ -6,7 +6,7 @@ The [`SwapPayRouter.sol`](../../src/payments/SwapPayRouter.sol) and [`ZonePaymen
 
 ---
 
-## ⚡ The 1-Click Payment Pipeline
+## The 1-Click Payment Pipeline
 
 When a customer pays with USDC or ETH, the router executes the entire sequence atomically in **one single transaction**:
 
@@ -22,7 +22,7 @@ flowchart LR
 
 ---
 
-## 🎁 The Incentive Flywheel
+## The Incentive Flywheel
 
 1. **For the Customer**: Receiving $1\%$ instant cashback in $HNY$ creates an immediate monetary incentive over traditional credit cards (which charge 2.9% + $0.30).
 2. **For the Merchant**: Lower fees (1% vs 3%), instant settlement, no chargebacks, and automated tax accounting.
@@ -30,10 +30,10 @@ flowchart LR
 
 ---
 
-## 💻 Frontend Code Example (React / Wagmi)
+## Frontend Code Example (React / Wagmi)
 
 ```tsx
-import { ZoneCheckoutClient } from '@economic-zone/checkout';
+import { ZoneCheckoutClient } from '@senhor-f/checkout';
 import { useWriteContract } from 'wagmi';
 
 const checkout = new ZoneCheckoutClient("0xSwapPayRouterAddress...");

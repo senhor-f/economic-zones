@@ -4,7 +4,7 @@
 
 ---
 
-## 🛡️ Threat Model & Attack Matrix
+## Threat Model & Attack Matrix
 
 ```mermaid
 graph TD
@@ -33,7 +33,7 @@ graph TD
 
 ---
 
-## 🔬 Invariant Fuzzing Results (Foundry)
+## Invariant Fuzzing Results (Foundry)
 
 The protocol underwent invariant fuzz testing executed over **32,768 random state calls** per invariant test suite with random actors executing buys, sells, redemptions, and yield injections:
 
@@ -55,7 +55,7 @@ stateDiagram-v2
 
 ---
 
-## 🏦 Bank Run Simulation Proof
+## Bank Run Simulation Proof
 
 In [`test/attacks/BankRunSimulation.t.sol`](../../test/attacks/BankRunSimulation.t.sol), 10 concurrent actors mint tokens during high TVL and then attempt to redeem $100\%$ of their holdings simultaneously at the floor:
 - **Result**: Every actor receives their exact proportional share of USDC.

@@ -4,7 +4,7 @@
 
 ---
 
-## 🏛️ 1. Milestone Futarchy ([`MilestoneFutarchy.sol`](../../src/governance/MilestoneFutarchy.sol))
+## 1. Milestone Futarchy ([`MilestoneFutarchy.sol`](../../src/governance/MilestoneFutarchy.sol))
 
 Rather than traditional "one-token-one-vote" governance that suffers from plutocracy and low voter turnout, high-stakes grant tranches are governed by **Milestone Futarchy**:
 - Prediction markets (PASS vs FAIL tokens) open on proposal milestones.
@@ -13,7 +13,7 @@ Rather than traditional "one-token-one-vote" governance that suffers from plutoc
 
 ---
 
-## 🔒 2. veHNY Floor-Locked Savings ([`FloorLockedSavings.sol`](../../src/zones/FloorLockedSavings.sol))
+## 2. veHNY Floor-Locked Savings ([`FloorLockedSavings.sol`](../../src/zones/FloorLockedSavings.sol))
 
 Users who lock $HNY$ for 1 to 48 months receive **veHNY** positions with tiered economic and governance benefits:
 
@@ -28,7 +28,7 @@ Users who lock $HNY$ for 1 to 48 months receive **veHNY** positions with tiered 
 
 ---
 
-## 🌐 3. Custom Tariffs & Multi-Zone Clearing ([`ZoneClearingHouse.sol`](../../src/zones/ZoneClearingHouse.sol))
+## 3. Custom Tariffs & Multi-Zone Clearing ([`ZoneClearingHouse.sol`](../../src/zones/ZoneClearingHouse.sol))
 
 Sovereign Economic Zones can establish bilateral trade agreements:
 - **Category VAT & Tariffs** via [`CustomTariffHook.sol`](../../src/hooks/CustomTariffHook.sol).

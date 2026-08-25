@@ -1,25 +1,25 @@
-# @economic-zone/checkout
+# @senhor-f/checkout
 
 > **Comprehensive TypeScript SDK & 1-Click Checkout Client for Economic Zones Protocol ($HNY v2)**  
 > Supports 1-Click Drop-in Payments with Instant Cashback, Continuous Payroll Streaming, Revenue Splits with Auto-Stake, veHNY Lockers, EIP-4844 Blob Proofs, and On-Chain Version Decoding.
 
 ---
 
-## 📦 Installation
+## Installation
 
 ```bash
-bun add @economic-zone/checkout viem
+bun add @senhor-f/checkout viem
 # or
-npm install @economic-zone/checkout viem
+npm install @senhor-f/checkout viem
 ```
 
 ---
 
-## ⚡ Quickstart
+## Quickstart
 
 ### 1. 1-Click Drop-in Checkout (React / Wagmi / Viem)
 ```tsx
-import { ZoneCheckoutClient } from '@economic-zone/checkout';
+import { ZoneCheckoutClient } from '@senhor-f/checkout';
 import { useWriteContract } from 'wagmi';
 
 const checkout = new ZoneCheckoutClient("0xSwapPayRouterAddress...");
@@ -49,7 +49,7 @@ export function PayButton({ projectId, amountUSDC }: { projectId: bigint; amount
 
 ### 2. Multi-Party Revenue Splits with Auto-Stake in $sHNY
 ```ts
-import { ZoneClient } from '@economic-zone/checkout';
+import { ZoneClient } from '@senhor-f/checkout';
 
 const txPayload = ZoneClient.prepareSplitConfig(
   "0xZoneRevenueSplitterAddress...",
@@ -70,7 +70,7 @@ const txPayload = ZoneClient.prepareSplitConfig(
 
 ### 3. Continuous Second-by-Second Payroll Streaming
 ```ts
-import { ZoneClient } from '@economic-zone/checkout';
+import { ZoneClient } from '@senhor-f/checkout';
 
 const streamPayload = ZoneClient.preparePayrollStream(
   "0xContinuousPayrollStreamerAddress...",
@@ -89,7 +89,7 @@ const streamPayload = ZoneClient.preparePayrollStream(
 
 ### 4. Decode On-Chain `bytes32 PROTOCOL_VERSION` Metadata
 ```ts
-import { ZoneClient } from '@economic-zone/checkout';
+import { ZoneClient } from '@senhor-f/checkout';
 
 const versionTag = "0x484e5932020100000068ac3d805374616b6564484e5900000000000000000000";
 const info = ZoneClient.decodeProtocolVersion(versionTag);
@@ -107,5 +107,5 @@ import {
   payments_SwapPayRouter_SwapPayRouterAbi,
   token_StakedHNY_StakedHNYAbi,
   zones_FloorLockedSavings_FloorLockedSavingsAbi
-} from '@economic-zone/checkout';
+} from '@senhor-f/checkout';
 ```

@@ -6,7 +6,7 @@
 
 ---
 
-## 🔄 Subscription Mechanics
+## Subscription Mechanics
 
 1. **Plan Creation**: Merchants define plans with `planId`, `periodSeconds` (e.g. 30 days), and `amountHNY`.
 2. **User Authorization**: Subscribers approve the `SubscriptionManager` once via standard ERC-20 permit or approval.

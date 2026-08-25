@@ -6,7 +6,7 @@ To enable millions of microtransactions without paying Ethereum L1 gas fees, the
 
 ---
 
-## 🧬 1. EIP-4844 KZG Point Evaluation Precompile (`0x0A`)
+## 1. EIP-4844 KZG Point Evaluation Precompile (`0x0A`)
 
 High-frequency commercial receipts from Base L2 are aggregated by [`L2CommerceBatcher.sol`](../../src/crosschain/L2CommerceBatcher.sol) and submitted to the Ethereum consensus layer inside an **EIP-4844 Blob**.
 
@@ -26,14 +26,14 @@ bytes memory precompileInput = abi.encodePacked(
 if (!callOk || returnData.length != 64) revert InvalidKZGProof();
 ```
 
-### Why this is revolutionary:
+### Protocol Advantages:
 - **Zero Trusted Oracles**: L1 cryptographically proves that sales occurred on L2 via polynomial commitment openings.
 - **Gas Efficiency**: Verification costs a flat **~50,000 gas** on L1 regardless of whether the batch contains 100 or 100,000 invoices.
 - **Sybil-Proof Grants**: The RetroPGF pool ([`PoCRetroPGFPool.sol`](../../src/zones/PoCRetroPGFPool.sol)) awards quadratic funding grants only to projects with verifiable blob-proven volume.
 
 ---
 
-## 🔐 2. Sovereign Cross-Chain Custody ([`xHNYLockbox.sol`](../../src/crosschain/xHNYLockbox.sol))
+## 2. Sovereign Cross-Chain Custody ([`xHNYLockbox.sol`](../../src/crosschain/xHNYLockbox.sol))
 
 The token standard follows **ERC-7281 / xERC20**:
 

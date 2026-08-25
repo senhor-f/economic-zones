@@ -6,7 +6,7 @@ The protocol natively implements the `HTTP 402 Payment Required` standard via [`
 
 ---
 
-## 🤖 The M2M Settlement Flow
+## The M2M Settlement Flow
 
 ```mermaid
 sequenceDiagram
@@ -28,7 +28,7 @@ sequenceDiagram
 
 ---
 
-## 🔒 EIP-712 Type Definition
+## EIP-712 Type Definition
 
 ```solidity
 struct AgentPaymentPermit {

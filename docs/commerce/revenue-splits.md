@@ -6,7 +6,7 @@
 
 ---
 
-## 💸 Automated Split Architecture
+## Automated Split Architecture
 
 When a payment of 1,000 $HNY arrives for a registered project:
 
@@ -21,7 +21,7 @@ pie title 1,000 $HNY Revenue Distribution Example
 
 ---
 
-## 📈 The Auto-Staking Advantage
+## The Auto-Staking Advantage
 
 Rather than letting working capital sit idle in an operating account:
 - Merchants can configure `autoStakeShareBps` (e.g. $10\% = 1000\text{ bps}$).

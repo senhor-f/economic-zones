@@ -1,23 +1,23 @@
 # TypeScript SDK Guide
 
-> **Official `@economic-zone/checkout` SDK & Viem Client Documentation**
+> **Official `@senhor-f/checkout` SDK & Viem Client Documentation**
 
 ---
 
-## 📦 Installation
+## Installation
 
 ```bash
-bun add @economic-zone/checkout viem
+bun add @senhor-f/checkout viem
 # or
-npm install @economic-zone/checkout viem
+npm install @senhor-f/checkout viem
 ```
 
 ---
 
-## 🚀 Basic Usage with `createEconomicZoneClient`
+## Basic Usage with `createEconomicZoneClient`
 
 ```ts
-import { createEconomicZoneClient } from '@economic-zone/checkout';
+import { createEconomicZoneClient } from '@senhor-f/checkout';
 
 const client = createEconomicZoneClient({
   chain: 'base',
@@ -45,10 +45,10 @@ console.log(`Contract: ${metadata.contractName} (v${metadata.major}.${metadata.m
 
 ---
 
-## 🧮 Pure Mathematical Utilities
+## Pure Mathematical Utilities
 
 ```ts
-import { EconomicZoneClient } from '@economic-zone/checkout';
+import { EconomicZoneClient } from '@senhor-f/checkout';
 
 // 1. Calculate Floor Price Growth given $10,000 dripped yield
 const growth = EconomicZoneClient.math.calculateFloorGrowth(

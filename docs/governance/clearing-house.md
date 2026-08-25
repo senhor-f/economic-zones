@@ -2,11 +2,11 @@
 
 > **Bilateral Netting Engine & Periodic Settlement Between Economic Zones**
 
-[`ZoneClearingHouse.sol`](../../src/zones/ZoneClearingHouse.sol) provides inter-zone fiscal coordination, allowing multiple sovereign economic zones (e.g. Zone #1: Buenos Aires Tech District, Zone #2: Austin AI Valley, Zone #3: Zug Crypto Valley) to conduct cross-border commerce with **continuous bilateral netting**.
+[`ZoneClearingHouse.sol`](../../src/zones/ZoneClearingHouse.sol) provides inter-zone fiscal coordination, allowing multiple sovereign economic zones to conduct cross-border commerce with **continuous bilateral netting**.
 
 ---
 
-## 🌐 The Bilateral Netting Flow
+## The Bilateral Netting Flow
 
 ```mermaid
 sequenceDiagram
@@ -31,7 +31,7 @@ sequenceDiagram
 
 ---
 
-## 💡 Gas & Liquidity Advantages
+## Gas & Liquidity Advantages
 
 1. **80% Less On-Chain Transactions**: Thousands of bilateral consumer purchases are netted mathematically in storage.
 2. **Zero Capital Inefficiencies**: Settlement vaults only need enough reserve to cover the **net imbalance** rather than gross trade volume.

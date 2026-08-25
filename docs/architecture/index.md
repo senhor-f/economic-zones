@@ -8,7 +8,7 @@ The **Economic Zones Protocol** decouples high-value monetary reserves from high
 flowchart TB
     subgraph L1["Ethereum L1 — Central Settlement & Capital Hub"]
         ABC["AugmentedBondingCurve.sol<br/>($HNY Central Reserve)"]
-        TYV["TreasuryYieldVault.sol<br/>(100% Principal Protected ERC-4626)"]
+        TYV["TreasuryYieldVault.sol<br/>(Principal Protected ERC-4626)"]
         FD["FloorDripper.sol<br/>(Continuous Yield Streaming)"]
         LBV["L1BlobCommerceVerifier.sol<br/>(KZG Precompile 0x0A)"]
         XLOCK["xHNYLockbox.sol<br/>(ERC-7281 Sovereign Rate Limiting)"]
@@ -35,7 +35,7 @@ flowchart TB
 
 ---
 
-## 🏛️ The Three Pillars of Sovereign Zones
+## The Three Pillars of Sovereign Zones
 
 ### 1. Capital Security & Guaranteed Solvency (Ethereum L1)
 All foundational monetary parameters, bonding curve reserves, and institutional treasury assets live on Ethereum L1. Even under total L2 sequencer outages, zero institutional capital is at risk.

@@ -1,4 +1,4 @@
-# Treasury Yield Bóvedas & Continuous Floor Dripper
+# Treasury Yield Vaults & Continuous Floor Dripper
 
 > **Institutional Principal Protection with Continuous Value Streaming**
 
@@ -6,7 +6,7 @@ The protocol deploys capital from entry tributes and DAO treasuries into low-ris
 
 ---
 
-## 🏦 1. Principal-Protected Treasury Vaults ([`TreasuryYieldVault.sol`](../../src/rebalancing/TreasuryYieldVault.sol))
+## 1. Principal-Protected Treasury Vaults ([`TreasuryYieldVault.sol`](../../src/rebalancing/TreasuryYieldVault.sol))
 
 The `TreasuryYieldVault` is an institutional **ERC-4626 vault** that accepts USDC deposits from DAOs, sovereign zone funds, and enterprise treasuries.
 
@@ -28,7 +28,7 @@ graph TD
 
 ---
 
-## ⏳ 2. Continuous Linear Floor Dripper ([`FloorDripper.sol`](../../src/rebalancing/FloorDripper.sol))
+## 2. Continuous Linear Floor Dripper ([`FloorDripper.sol`](../../src/rebalancing/FloorDripper.sol))
 
 Rather than injecting large lump sums of yield into the bonding curve (which creates sandwich attack vulnerabilities for MEV bots), the `FloorDripper` streams reserve assets **second-by-second**:
 
@@ -40,9 +40,9 @@ $$\text{Drip Amount} = \Delta t \times \text{dripRatePerSecond}$$
 
 ---
 
-## 🌊 3. Protocol-Owned Liquidity (POL) Manager ([`POLManager.sol`](../../src/rebalancing/POLManager.sol))
+## 3. Protocol-Owned Liquidity (POL) Manager ([`POLManager.sol`](../../src/rebalancing/POLManager.sol))
 
 The `POLManager` deploys secondary AMM liquidity (e.g. Uniswap v3/v4 $HNY$/USDC pool) using protocol reserves:
-- Cosechas de comisiones de trading (*trading fees*).
-- Quema de $HNY$ del mercado con el $50\%$ de las ganancias.
-- Enrutamiento del $50\%$ restante al `FloorDripper`.
+- Trading fee harvesting.
+- Burning $HNY$ from the market with 50% of the proceeds.
+- Routing the remaining 50% to the `FloorDripper`.

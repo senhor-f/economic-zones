@@ -10,7 +10,7 @@ bytes32 public immutable PROTOCOL_VERSION;
 
 ---
 
-## 📦 32-Byte Bitpacking Layout
+## 32-Byte Bitpacking Layout
 
 ```
  0               4       5       6       7                  13                            31
@@ -31,10 +31,10 @@ bytes32 public immutable PROTOCOL_VERSION;
 
 ---
 
-## 🔍 Decoding via TypeScript SDK
+## Decoding via TypeScript SDK
 
 ```ts
-import { ZoneClient } from '@economic-zone/checkout';
+import { ZoneClient } from '@senhor-f/checkout';
 
 const tag = "0x484e5932020100000068ac3d805374616b6564484e5900000000000000000000";
 const info = ZoneClient.decodeProtocolVersion(tag);

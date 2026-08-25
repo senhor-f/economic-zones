@@ -4,7 +4,7 @@
 
 ---
 
-## 🚀 Automated Deployment Script ([`DeployProduction.s.sol`](../../script/DeployProduction.s.sol))
+## Automated Deployment Script ([`DeployProduction.s.sol`](../../script/DeployProduction.s.sol))
 
 The deployment script sets up the full v2.1 suite in proper dependency order with access controls and initial liquidity minters.
 
@@ -27,7 +27,7 @@ forge script script/DeployProduction.s.sol:DeployProduction \
 
 ---
 
-## 📋 Deployed Contracts Checklist
+## Deployed Contracts Checklist
 
 | Contract | Role | Network |
 | :--- | :--- | :--- |
@@ -43,7 +43,7 @@ forge script script/DeployProduction.s.sol:DeployProduction \
 | **`CustomTariffHook`** | Sovereign VAT & Cross-Zone Tariffs | Base L2 |
 | **`ZoneClearingHouse`** | Multi-zone bilateral netting & settlement | Base L2 |
 | **`x402Settler`** | AI Agent HTTP 402 Settlement | Base L2 |
-| **`TreasuryYieldVault`** | 100% Principal-Protected ERC-4626 Vault | Ethereum L1 |
+| **`TreasuryYieldVault`** | Principal-Protected ERC-4626 Vault | Ethereum L1 |
 | **`FloorDripper`** | Continuous Yield Streaming to Reserve Floor | Ethereum L1 |
 | **`POLManager`** | DEX Protocol-Owned Liquidity Fee Harvester | Ethereum L1 |
 | **`L1BlobCommerceVerifier`** | EIP-4844 KZG Point Evaluation Verifier (0x0A) | Ethereum L1 |

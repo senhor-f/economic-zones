@@ -6,7 +6,7 @@
 
 ---
 
-## ⏱️ Second-by-Second Vesting Formula
+## Second-by-Second Vesting Formula
 
 For a stream funded with $D$ tokens running from $t_{\text{start}}$ to $t_{\text{stop}}$:
 
@@ -27,7 +27,7 @@ flowchart LR
 
 ---
 
-## 🏛️ Embedded Municipal Tax Withholding
+## Embedded Municipal Tax Withholding
 
 When a worker calls `withdrawFromStream(streamId, amount)`:
 - The contract automatically calculates `taxAmount = (amount * taxRateBps) / 10000`.

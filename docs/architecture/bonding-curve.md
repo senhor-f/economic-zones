@@ -6,7 +6,7 @@ The core currency of the Economic Zone ($HNY) is minted and burned algorithmical
 
 ---
 
-## 📐 Mathematical Model
+## Mathematical Model
 
 ### 1. Spot Price Function
 The marginal spot price $P(S)$ for supply $S$ follows an augmented linear equation:
@@ -28,12 +28,12 @@ graph LR
     A["Buy HNY (USDC In)"] --> B["Curve Reserve + Treasury Cut"]
     B --> C["HNY Minted (Supply Increases)"]
     D["Sell HNY (Exit Tribute)"] --> E["Tribute (1%) Routed to Floor"]
-    E --> F["Remaining Holders Floor Price Increases! 📈"]
+    E --> F["Remaining Holders Floor Price Increases"]
 ```
 
 ---
 
-## 🛡️ Solvency Invariants (Formally Verified)
+## Solvency Invariants (Formally Verified)
 
 The protocol implements two inviolable mathematical invariants verified by Foundry fuzzing (32,768 calls/inv) and bank run attack suites:
 
@@ -47,7 +47,7 @@ Because redemptions via `redeemAtFloor()` burn $HNY$ exactly at the proportional
 
 ---
 
-## ⚡ Gas Optimization via Solady & Yul Assembly
+## Gas Optimization via Solady & Yul Assembly
 
 Crucial price evaluation and invariant verification functions are implemented in inline Yul assembly for maximum execution speed and zero overflow risk:
 
