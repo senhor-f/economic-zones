@@ -1,0 +1,370 @@
+/* ============================================================
+   Economic Zones Protocol -- Deluxe Dark Theme
+   Gold/Amber ($HNY) accent on deep noir base with mesh gradient
+   ============================================================ */
+
+/* ---------- VitePress CSS Variables ---------- */
+
+:root {
+  /* Brand palette */
+  --vp-c-brand-1: #eab308;
+  --vp-c-brand-2: #ca8a04;
+  --vp-c-brand-3: #a16207;
+  --vp-c-brand-soft: rgba(234, 179, 8, 0.14);
+
+  /* Accent mapping */
+  --vp-c-tip-1: var(--vp-c-brand-1);
+  --vp-c-tip-2: var(--vp-c-brand-2);
+  --vp-c-tip-3: var(--vp-c-brand-3);
+  --vp-c-tip-soft: var(--vp-c-brand-soft);
+
+  /* Force dark mode */
+  --vp-c-bg: #0a0a0f;
+  --vp-c-bg-soft: #111118;
+  --vp-c-bg-mute: #18181f;
+  --vp-c-bg-alt: #0e0e14;
+
+  --vp-c-text-1: #f4f4f5;
+  --vp-c-text-2: #a1a1aa;
+  --vp-c-text-3: #71717a;
+
+  --vp-c-divider: rgba(234, 179, 8, 0.08);
+  --vp-c-gutter: rgba(234, 179, 8, 0.04);
+
+  /* Nav / sidebar */
+  --vp-nav-bg-color: rgba(10, 10, 15, 0.85);
+  --vp-sidebar-bg-color: var(--vp-c-bg);
+  --vp-local-nav-bg-color: rgba(10, 10, 15, 0.85);
+
+  /* Code blocks */
+  --vp-code-block-bg: #0e0e14;
+  --vp-code-line-highlight-color: rgba(234, 179, 8, 0.06);
+  --vp-code-tab-bg: #0a0a0f;
+  --vp-code-tab-text-color: var(--vp-c-text-2);
+  --vp-code-tab-active-text-color: var(--vp-c-brand-1);
+  --vp-code-tab-active-bar-color: var(--vp-c-brand-1);
+
+  /* Custom property */
+  --vp-c-brand-glow: rgba(234, 179, 8, 0.25);
+
+  /* Home */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(135deg, #eab308 0%, #f59e0b 40%, #fbbf24 100%);
+  --vp-home-hero-image-background-image: radial-gradient(ellipse at 50% 50%, rgba(234, 179, 8, 0.12) 0%, transparent 70%);
+  --vp-home-hero-image-filter: blur(68px);
+
+  /* Buttons */
+  --vp-button-brand-bg: var(--vp-c-brand-1);
+  --vp-button-brand-text: #0a0a0f;
+  --vp-button-brand-hover-bg: var(--vp-c-brand-2);
+  --vp-button-brand-hover-text: #0a0a0f;
+  --vp-button-brand-active-bg: var(--vp-c-brand-3);
+  --vp-button-brand-active-text: #0a0a0f;
+
+  --vp-button-alt-bg: rgba(234, 179, 8, 0.08);
+  --vp-button-alt-text: var(--vp-c-brand-1);
+  --vp-button-alt-hover-bg: rgba(234, 179, 8, 0.14);
+  --vp-button-alt-hover-text: var(--vp-c-brand-1);
+
+  /* Badge */
+  --vp-badge-tip-border: var(--vp-c-brand-2);
+  --vp-badge-tip-text: var(--vp-c-brand-1);
+  --vp-badge-tip-bg: var(--vp-c-brand-soft);
+
+  /* Carbon (dark mode support) */
+  --vp-carbon-ads-bg-color: var(--vp-c-bg-soft);
+}
+
+/* Ensure dark mode is always active */
+.dark {
+  --vp-c-bg: #0a0a0f;
+  --vp-c-bg-soft: #111118;
+  --vp-c-bg-mute: #18181f;
+  --vp-c-bg-alt: #0e0e14;
+
+  --vp-c-text-1: #f4f4f5;
+  --vp-c-text-2: #a1a1aa;
+  --vp-c-text-3: #71717a;
+}
+
+/* ---------- Animated Mesh Gradient Background ---------- */
+
+html {
+  background: #0a0a0f;
+}
+
+body {
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 20%, rgba(234, 179, 8, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 90% 80%, rgba(59, 130, 246, 0.03) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(234, 179, 8, 0.02) 0%, transparent 50%),
+    #0a0a0f;
+  background-attachment: fixed;
+}
+
+/* ---------- Subtle Grid Overlay ---------- */
+
+.VPContent::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(234, 179, 8, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(234, 179, 8, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 0%, black 0%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 0%, black 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ---------- Nav Glassmorphism ---------- */
+
+.VPNav .VPNavBar {
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border-bottom: 1px solid rgba(234, 179, 8, 0.06);
+}
+
+.VPLocalNav {
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  border-bottom: 1px solid rgba(234, 179, 8, 0.04);
+}
+
+/* ---------- Sidebar ---------- */
+
+.VPSidebar {
+  border-right: 1px solid rgba(234, 179, 8, 0.06);
+}
+
+.VPSidebar .VPSidebarItem.is-active > .item > .link > .text {
+  color: var(--vp-c-brand-1);
+}
+
+.VPSidebar .VPSidebarItem .link:hover .text {
+  color: var(--vp-c-brand-2);
+}
+
+/* ---------- Hero Section ---------- */
+
+.VPHero .name {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.VPHero .text {
+  color: var(--vp-c-text-2);
+  font-weight: 500;
+}
+
+.VPHero .tagline {
+  color: var(--vp-c-text-3);
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+/* Glow behind hero text */
+.VPHero .main::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(234, 179, 8, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ---------- Feature Cards ---------- */
+
+.VPFeature {
+  background: rgba(17, 17, 24, 0.6) !important;
+  border: 1px solid rgba(234, 179, 8, 0.06) !important;
+  border-radius: 12px !important;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.VPFeature::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.04) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.VPFeature:hover {
+  border-color: rgba(234, 179, 8, 0.16) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(234, 179, 8, 0.06);
+}
+
+.VPFeature:hover::before {
+  opacity: 1;
+}
+
+.VPFeature .title {
+  color: var(--vp-c-brand-1) !important;
+  font-weight: 600;
+}
+
+.VPFeature .details {
+  color: var(--vp-c-text-2);
+  line-height: 1.6;
+}
+
+/* ---------- Content Area ---------- */
+
+.vp-doc h1 {
+  background: linear-gradient(135deg, #eab308, #fbbf24);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.vp-doc h2 {
+  border-top: 1px solid rgba(234, 179, 8, 0.08);
+  padding-top: 24px;
+  color: var(--vp-c-text-1);
+}
+
+.vp-doc a {
+  color: var(--vp-c-brand-1);
+  text-decoration-color: rgba(234, 179, 8, 0.3);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.vp-doc a:hover {
+  text-decoration-color: var(--vp-c-brand-1);
+}
+
+/* Inline code */
+.vp-doc :not(pre) > code {
+  background: rgba(234, 179, 8, 0.08);
+  color: var(--vp-c-brand-1);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.9em;
+}
+
+/* Code blocks - enhanced */
+.vp-doc div[class*='language-'] {
+  border: 1px solid rgba(234, 179, 8, 0.06);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+.vp-doc div[class*='language-']::before {
+  color: var(--vp-c-brand-2) !important;
+  font-weight: 500;
+}
+
+/* Tables */
+.vp-doc table {
+  border-collapse: collapse;
+}
+
+.vp-doc tr {
+  border-top: 1px solid rgba(234, 179, 8, 0.06);
+}
+
+.vp-doc tr:nth-child(2n) {
+  background: rgba(234, 179, 8, 0.02);
+}
+
+.vp-doc th {
+  background: rgba(234, 179, 8, 0.06);
+  color: var(--vp-c-brand-1);
+  font-weight: 600;
+}
+
+/* Blockquotes */
+.vp-doc blockquote {
+  border-left: 3px solid var(--vp-c-brand-2);
+  background: rgba(234, 179, 8, 0.04);
+  color: var(--vp-c-text-2);
+}
+
+/* ---------- Custom containers / callouts ---------- */
+
+.vp-doc .custom-block.tip {
+  border-color: var(--vp-c-brand-2);
+  background: rgba(234, 179, 8, 0.04);
+}
+
+.vp-doc .custom-block.tip .custom-block-title {
+  color: var(--vp-c-brand-1);
+}
+
+/* ---------- Mermaid Diagrams ---------- */
+
+.vp-doc .mermaid {
+  background: rgba(17, 17, 24, 0.5);
+  border: 1px solid rgba(234, 179, 8, 0.06);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+/* ---------- Footer ---------- */
+
+.VPFooter {
+  border-top: 1px solid rgba(234, 179, 8, 0.06);
+}
+
+/* ---------- Search ---------- */
+
+.VPLocalSearchBox .search-input {
+  background: var(--vp-c-bg-soft);
+  border: 1px solid rgba(234, 179, 8, 0.1);
+}
+
+.VPLocalSearchBox .search-input:focus {
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 0 0 2px var(--vp-c-brand-glow);
+}
+
+/* ---------- Scrollbar ---------- */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--vp-c-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(234, 179, 8, 0.15);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(234, 179, 8, 0.3);
+}
+
+/* ---------- Selection ---------- */
+
+::selection {
+  background: rgba(234, 179, 8, 0.2);
+  color: var(--vp-c-text-1);
+}
+
+/* ---------- Transitions ---------- */
+
+.VPSidebar,
+.VPNavBar,
+.VPContent,
+.VPFeature {
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}

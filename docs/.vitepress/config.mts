@@ -10,6 +10,7 @@ export default withMermaid(
     outDir: '.vitepress/dist',
     cleanUrls: true,
     ignoreDeadLinks: true,
+    appearance: 'dark',
     themeConfig: {
       nav: [
         { text: 'Home', link: '/' },
