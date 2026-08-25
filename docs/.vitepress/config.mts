@@ -60,7 +60,7 @@ export default withMermaid(
         {
           text: 'Developer Tooling & SDK',
           items: [
-            { text: '@senhor-f/checkout SDK', link: '/sdk/typescript' },
+            { text: 'TypeScript SDKs (@senhor-f/sdk)', link: '/sdk/typescript' },
             { text: 'Deployment & Operations', link: '/operations/deployments' }
           ]
         }

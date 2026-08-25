@@ -9,8 +9,10 @@
   ],
   "scripts": {
     "test": "forge test",
-    "test:sdk": "cd pkg/checkout && bun test",
-    "build:sdk": "cd pkg/checkout && bun run build",
+    "test:sdk": "cd pkg/sdk && bun test",
+    "build:sdk": "cd pkg/sdk && bun run build",
+    "test:checkout": "cd pkg/checkout && bun test",
+    "build:checkout": "cd pkg/checkout && bun run build",
     "widget:dev": "cd apps/demo-widget && vite",
     "widget:build": "cd apps/demo-widget && bun run build",
     "docs:dev": "vitepress dev docs",

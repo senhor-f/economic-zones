@@ -1,0 +1,48 @@
+{
+  "name": "@senhor-f/sdk",
+  "version": "2.1.0",
+  "description": "Universal TypeScript SDK and Viem client for Economic Zones Protocol ($HNY v2) - Bonding Curves, Vaults, Subscriptions, Payroll, AI Micropayments, and KZG Blobs",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/senhor-f/economic-zones.git"
+  },
+  "scripts": {
+    "build:abis": "node scripts/buildAbis.mjs",
+    "build": "bun run build:abis && tsc && cp src/abis.json src/abis.jsonl dist/",
+    "test": "bun test"
+  },
+  "keywords": [
+    "crypto",
+    "sdk",
+    "economic-zones",
+    "hny",
+    "bonding-curve",
+    "erc4626",
+    "viem",
+    "solidity",
+    "eip-4844",
+    "xerc20",
+    "x402",
+    "ai-payments"
+  ],
+  "author": "senhor-f",
+  "license": "MIT",
+  "dependencies": {
+    "viem": "^2.21.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.5.0"
+  }
+}

@@ -1,8 +1,9 @@
-name: Release Protocol & SDK
+name: Release Protocol & SDKs
 
 # Unified Release Trigger: v*
-# Builds contracts, packages TypeScript SDK, generates cryptographic SHA-256 checksums,
-# publishes @<owner>/checkout to GitHub Packages, and creates/updates an idempotent GitHub Release.
+# Builds contracts, packages Universal TypeScript SDK (@<owner>/sdk) & Checkout SDK (@<owner>/checkout),
+# generates cryptographic SHA-256 checksums, publishes packages to GitHub Packages,
+# and creates/updates an idempotent GitHub Release.
 
 on:
   push:
@@ -49,8 +50,49 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
-      - name: Build & Package TypeScript SDK
+      - name: Build & Package Protocol SDK (@${{ github.repository_owner }}/sdk)
         id: sdk
+        working-directory: pkg/sdk
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          
+          # Sync package.json version and scope with repository owner
+          node -e '
+            const fs = require("fs");
+            const pkg = JSON.parse(fs.readFileSync("./package.json", "utf8"));
+            pkg.name = "@${{ github.repository_owner }}/sdk";
+            pkg.version = "'"$VERSION"'";
+            fs.writeFileSync("./package.json", JSON.stringify(pkg, null, 2));
+            console.log("Aligned package name:", pkg.name, "version:", pkg.version);
+          '
+          
+          bun install
+          bun run build
+          bun test
+          
+          TARBALL=$(npm pack)
+          echo "tarball=$TARBALL" >> "$GITHUB_OUTPUT"
+          
+          # Copy tarball and ABIs to root for release bundling
+          cp "$TARBALL" ../../
+          cp src/abis.json ../../
+          cp src/abis.jsonl ../../
+
+      - name: Publish @${{ github.repository_owner }}/sdk to GitHub Packages
+        working-directory: pkg/sdk
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          PKG_NAME="@${{ github.repository_owner }}/sdk"
+          if npm view "${PKG_NAME}@${VERSION}" version >/dev/null 2>&1; then
+            echo "::notice::${PKG_NAME}@${VERSION} is already published — skipping"
+          else
+            npm publish
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & Package Checkout SDK (@${{ github.repository_owner }}/checkout)
+        id: checkout
         working-directory: pkg/checkout
         run: |
           VERSION="${{ steps.version.outputs.version }}"
@@ -74,10 +116,8 @@ jobs:
           
           # Copy tarball to root for release bundling
           cp "$TARBALL" ../../
-          cp src/abis.json ../../
-          cp src/abis.jsonl ../../
 
-      - name: Publish SDK to GitHub Packages
+      - name: Publish @${{ github.repository_owner }}/checkout to GitHub Packages
         working-directory: pkg/checkout
         run: |
           VERSION="${{ steps.version.outputs.version }}"
@@ -95,21 +135,24 @@ jobs:
         run: |
           TAG="${{ steps.version.outputs.tag }}"
           SDK_TARBALL="${{ steps.sdk.outputs.tarball }}"
+          CHECKOUT_TARBALL="${{ steps.checkout.outputs.tarball }}"
           CORE_TARBALL="economic-zone-core-${TAG}.tar.gz"
           
           # Create core protocol archive
           tar -czf "$CORE_TARBALL" out/ script/ src/
           
           # Generate unified SHA-256 checksums file for all release assets
-          sha256sum "$CORE_TARBALL" "$SDK_TARBALL" abis.json abis.jsonl .gas-snapshot > CHECKSUMS-SHA256.txt
+          sha256sum "$CORE_TARBALL" "$SDK_TARBALL" "$CHECKOUT_TARBALL" abis.json abis.jsonl .gas-snapshot > CHECKSUMS-SHA256.txt
           cat CHECKSUMS-SHA256.txt
           
           CORE_SHA=$(sha256sum "$CORE_TARBALL" | awk '{print $1}')
           SDK_SHA=$(sha256sum "$SDK_TARBALL" | awk '{print $1}')
+          CHECKOUT_SHA=$(sha256sum "$CHECKOUT_TARBALL" | awk '{print $1}')
           
           echo "core_tarball=$CORE_TARBALL" >> "$GITHUB_OUTPUT"
           echo "core_sha=$CORE_SHA" >> "$GITHUB_OUTPUT"
           echo "sdk_sha=$SDK_SHA" >> "$GITHUB_OUTPUT"
+          echo "checkout_sha=$CHECKOUT_SHA" >> "$GITHUB_OUTPUT"
 
       - name: Create or Update Idempotent GitHub Release
         env:
@@ -119,21 +162,43 @@ jobs:
           VERSION="${{ steps.version.outputs.version }}"
           CORE_TARBALL="${{ steps.artifacts.outputs.core_tarball }}"
           SDK_TARBALL="${{ steps.sdk.outputs.tarball }}"
+          CHECKOUT_TARBALL="${{ steps.checkout.outputs.tarball }}"
           CORE_SHA="${{ steps.artifacts.outputs.core_sha }}"
           SDK_SHA="${{ steps.artifacts.outputs.sdk_sha }}"
+          CHECKOUT_SHA="${{ steps.artifacts.outputs.checkout_sha }}"
 
           # Write release notes markdown
           cat << 'EOF' > release_notes.md
-          ## Economic Zones Protocol & SDK ${{ steps.version.outputs.tag }}
+          ## Economic Zones Protocol & SDKs ${{ steps.version.outputs.tag }}
 
           Sovereign On-Chain Economies with an Unbreachable Floor Price, AI Agent Micropayments (x402), SaaS Subscriptions, Liquid Staking, and Yield-Backed Treasury Bóvedas.
 
           ---
 
-          ### TypeScript SDK Installation
+          ### 📦 Published Packages (GitHub Packages)
 
-          Published to GitHub Packages:
+          #### 1. Universal Protocol SDK (`@${{ github.repository_owner }}/sdk`)
+          ```bash
+          bun add @${{ github.repository_owner }}/sdk@${{ steps.version.outputs.version }}
+          # or
+          npm install @${{ github.repository_owner }}/sdk@${{ steps.version.outputs.version }}
+          ```
 
+          ```ts
+          import { createEconomicZoneClient, EconomicZoneClient } from "@${{ github.repository_owner }}/sdk";
+
+          const client = createEconomicZoneClient({
+            chain: "base",
+            addresses: {
+              curve: "0xAugmentedBondingCurveAddress...",
+              stakedHny: "0xStakedHNYAddress...",
+              swapPayRouter: "0xSwapPayRouterAddress...",
+              payrollStreamer: "0xContinuousPayrollStreamerAddress..."
+            }
+          });
+          ```
+
+          #### 2. Drop-in Checkout & Payments (`@${{ github.repository_owner }}/checkout`)
           ```bash
           bun add @${{ github.repository_owner }}/checkout@${{ steps.version.outputs.version }}
           # or
@@ -141,7 +206,7 @@ jobs:
           ```
 
           ```ts
-          import { ZoneCheckoutClient, ZoneClient } from "@${{ github.repository_owner }}/checkout";
+          import { ZoneCheckoutClient } from "@${{ github.repository_owner }}/checkout";
 
           const client = new ZoneCheckoutClient("0xSwapPayRouterAddress...");
           const payload = client.prepare1ClickPayment(
@@ -154,12 +219,13 @@ jobs:
 
           ---
 
-          ### Cryptographic Checksums (SHA-256)
+          ### 🔒 Cryptographic Checksums (SHA-256)
 
           | Artifact | SHA-256 Hash |
           | :--- | :--- |
           | `${{ steps.artifacts.outputs.core_tarball }}` | `${{ steps.artifacts.outputs.core_sha }}` |
           | `${{ steps.sdk.outputs.tarball }}` | `${{ steps.artifacts.outputs.sdk_sha }}` |
+          | `${{ steps.checkout.outputs.tarball }}` | `${{ steps.artifacts.outputs.checkout_sha }}` |
 
           ```bash
           # Verify integrity
@@ -168,7 +234,7 @@ jobs:
 
           ---
 
-          ### Included Modules
+          ### 🏛️ Included Modules
           - **Ethereum L1**: Augmented Bonding Curve ($HNY), Treasury Yield Vaults (ERC-4626), Floor Dripper, xHNY Lockbox (xERC20), EIP-4844 KZG Blob Verifier (0x0A).
           - **Base L2**: 1-Click Drop-in Checkout (+1% Instant Cashback), Continuous Payroll Streaming, Revenue Splits with Auto-Stake, veHNY Savings Lockers.
           - **Testing**: 60/60 passing Foundry suites (32k invariant fuzzing, 100% bank runs, live Base fork).
@@ -176,17 +242,18 @@ jobs:
 
           if gh release view "$TAG" >/dev/null 2>&1; then
             echo "Release $TAG already exists — updating assets and notes with --clobber..."
-            gh release upload "$TAG" "$CORE_TARBALL" "$SDK_TARBALL" "CHECKSUMS-SHA256.txt" "abis.json" "abis.jsonl" ".gas-snapshot" --clobber
-            gh release edit "$TAG" --title "Economic Zones Protocol & SDK ${TAG}" --notes-file release_notes.md
+            gh release upload "$TAG" "$CORE_TARBALL" "$SDK_TARBALL" "$CHECKOUT_TARBALL" "CHECKSUMS-SHA256.txt" "abis.json" "abis.jsonl" ".gas-snapshot" --clobber
+            gh release edit "$TAG" --title "Economic Zones Protocol & SDKs ${TAG}" --notes-file release_notes.md
           else
             echo "Creating new release $TAG..."
             gh release create "$TAG" \
               "$CORE_TARBALL" \
               "$SDK_TARBALL" \
+              "$CHECKOUT_TARBALL" \
               "CHECKSUMS-SHA256.txt" \
               "abis.json" \
               "abis.jsonl" \
               ".gas-snapshot" \
-              --title "Economic Zones Protocol & SDK ${TAG}" \
+              --title "Economic Zones Protocol & SDKs ${TAG}" \
               --notes-file release_notes.md
           fi

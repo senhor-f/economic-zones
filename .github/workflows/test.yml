@@ -33,9 +33,10 @@ jobs:
         with:
           path: |
             node_modules
+            pkg/sdk/node_modules
             pkg/checkout/node_modules
             apps/demo-widget/node_modules
-          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock', 'package.json', 'pkg/checkout/package.json', 'apps/demo-widget/package.json') }}
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock', 'package.json', 'pkg/sdk/package.json', 'pkg/checkout/package.json', 'apps/demo-widget/package.json') }}
 
       - name: Cache Foundry build (out/, cache/)
         uses: actions/cache@v4
@@ -61,13 +62,21 @@ jobs:
         run: forge snapshot --check
         id: gas-snapshot
 
-      - name: Build & Test TypeScript SDK (@senhor-f/checkout)
+      - name: Build & Test Protocol TypeScript SDK (@senhor-f/sdk)
+        run: |
+          cd pkg/sdk
+          bun install
+          bun run build
+          bun test
+        id: sdk-tests
+
+      - name: Build & Test Checkout SDK (@senhor-f/checkout)
         run: |
           cd pkg/checkout
           bun install
           bun run build
           bun test
-        id: sdk-tests
+        id: checkout-tests
 
       - name: Build Drop-in React Widget & Demo App (@senhor-f/demo-widget)
         run: |

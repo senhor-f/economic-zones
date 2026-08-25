@@ -47,6 +47,17 @@
         "typescript": "^5.5.0",
       },
     },
+    "pkg/sdk": {
+      "name": "@senhor-f/sdk",
+      "version": "2.1.0",
+      "dependencies": {
+        "viem": "^2.21.0",
+      },
+      "devDependencies": {
+        "@types/node": "^20.0.0",
+        "typescript": "^5.5.0",
+      },
+    },
   },
   "packages": {
     "@adraffy/ens-normalize": ["@adraffy/ens-normalize@1.11.1", "", {}, "sha512-nhCBV3quEgesuf7c7KYfperqSS14T8bYuvJ8PcLJp6znkZpFc0AuW4qBtr8eKVyPPe/8RSr7sglCWPU5eaxwKQ=="],
@@ -286,6 +297,8 @@
     "@senhor-f/checkout": ["@senhor-f/checkout@workspace:pkg/checkout"],
 
     "@senhor-f/demo-widget": ["@senhor-f/demo-widget@workspace:apps/demo-widget"],
+
+    "@senhor-f/sdk": ["@senhor-f/sdk@workspace:pkg/sdk"],
 
     "@shikijs/core": ["@shikijs/core@2.5.0", "", { "dependencies": { "@shikijs/engine-javascript": "2.5.0", "@shikijs/engine-oniguruma": "2.5.0", "@shikijs/types": "2.5.0", "@shikijs/vscode-textmate": "^10.0.2", "@types/hast": "^3.0.4", "hast-util-to-html": "^9.0.4" } }, "sha512-uu/8RExTKtavlpH7XqnVYBrfBkUc20ngXiX9NSrBhOVZYv/7XQRKUyhtkeflY5QsxC0GbJThCerruZfsUaSldg=="],
 
