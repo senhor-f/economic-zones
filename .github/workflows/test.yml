@@ -65,3 +65,8 @@ jobs:
           bun run build
           bun test
         id: sdk-tests
+
+      - name: Build VitePress Documentation Site
+        run: bun run docs:build
+        id: docs-build
+

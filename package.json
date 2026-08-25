@@ -1,0 +1,22 @@
+{
+  "name": "@economic-zone/monorepo",
+  "version": "2.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "forge test",
+    "test:sdk": "cd pkg/checkout && bun test",
+    "build:sdk": "cd pkg/checkout && bun run build",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "dependencies": {
+    "viem": "^2.21.0"
+  },
+  "devDependencies": {
+    "mermaid": "^11.4.0",
+    "vitepress": "^1.6.3",
+    "vitepress-plugin-mermaid": "^2.0.17"
+  }
+}
