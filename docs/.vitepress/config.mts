@@ -14,8 +14,8 @@ export default withMermaid(
         { text: 'Home', link: '/' },
         { text: 'Architecture', link: '/architecture/' },
         { text: 'Commerce Matrix', link: '/commerce/1click-checkout' },
-        { text: 'Governance & veHNY', link: '/governance/futarchy-conviction' },
-        { text: 'Cross-Chain & Blobs', link: '/architecture/cross-chain-blobs' },
+        { text: 'Roadmap', link: '/roadmap/' },
+        { text: 'Security', link: '/security/threat-model' },
         { text: 'TypeScript SDK', link: '/sdk/typescript' },
         { text: 'Deployments', link: '/operations/deployments' }
       ],
@@ -24,7 +24,8 @@ export default withMermaid(
           text: 'Introduction',
           items: [
             { text: 'Overview & Vision', link: '/' },
-            { text: 'Core Economic Invariants', link: '/architecture/bonding-curve' },
+            { text: 'Protocol Roadmap (Gantt)', link: '/roadmap/' },
+            { text: 'Security & Threat Model', link: '/security/threat-model' },
             { text: 'Immutable Versioning', link: '/contracts/versioning' }
           ]
         },
@@ -51,8 +52,7 @@ export default withMermaid(
           text: 'Governance & Sovereign Fiscality',
           items: [
             { text: 'Milestone Futarchy & Conviction', link: '/governance/futarchy-conviction' },
-            { text: 'veHNY Floor-Locked Savings', link: '/governance/futarchy-conviction#vehny-floor-locked-savings' },
-            { text: 'Custom Tariffs & Clearing House', link: '/governance/futarchy-conviction#custom-tariffs-multi-zone-clearing' }
+            { text: 'Bilateral Clearing House', link: '/governance/clearing-house' }
           ]
         },
         {
