@@ -58,13 +58,13 @@ export default withMermaid(
         {
           text: 'Developer Tooling & SDK',
           items: [
-            { text: '@economic-zone/checkout SDK', link: '/sdk/typescript' },
+            { text: '@senhor-f/checkout SDK', link: '/sdk/typescript' },
             { text: 'Deployment & Operations', link: '/operations/deployments' }
           ]
         }
       ],
       socialLinks: [
-        { icon: 'github', link: 'https://github.com' }
+        { icon: 'github', link: 'https://github.com/senhor-f/economic-zones' }
       ],
       search: {
         provider: 'local'

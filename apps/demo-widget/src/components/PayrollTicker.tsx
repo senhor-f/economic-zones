@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Play, Pause, Activity, DollarSign } from 'lucide-react';
-import { EconomicZoneClient } from '@economic-zone/checkout';
+import { EconomicZoneClient } from '@senhor-f/checkout';
 
 export const PayrollTicker: React.FC = () => {
   const [secondsElapsed, setSecondsElapsed] = useState<number>(12400);

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { CheckoutWidget } from './components/CheckoutWidget';
 import { FloorSimulator } from './components/FloorSimulator';
 import { PayrollTicker } from './components/PayrollTicker';
-import { ZoneClient } from '@economic-zone/checkout';
+import { ZoneClient } from '@senhor-f/checkout';
 import { Coins, Sparkles, BookOpen, Shield } from 'lucide-react';
 
 export function App() {

@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@economic-zone/checkout': resolve(__dirname, '../../pkg/checkout/src')
+      '@senhor-f/checkout': resolve(__dirname, '../../pkg/checkout/src')
     }
   }
 });

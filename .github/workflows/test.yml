@@ -34,7 +34,8 @@ jobs:
           path: |
             node_modules
             pkg/checkout/node_modules
-          key: bun-${{ runner.os }}-${{ hashFiles('pkg/checkout/bun.lock', 'pkg/checkout/package.json') }}
+            apps/demo-widget/node_modules
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock', 'package.json', 'pkg/checkout/package.json', 'apps/demo-widget/package.json') }}
 
       - name: Cache Foundry build (out/, cache/)
         uses: actions/cache@v4
@@ -42,7 +43,7 @@ jobs:
           path: |
             out
             cache
-          key: forge-${{ runner.os }}-v1.2.3-${{ hashFiles('src/**/*.sol', 'test/**/*.sol', 'script/**/*.sol', 'foundry.toml') }}
+          key: forge-${{ runner.os }}-${{ hashFiles('src/**/*.sol', 'test/**/*.sol', 'script/**/*.sol', 'foundry.toml') }}
 
       - name: Run Forge fmt
         run: forge fmt --check
@@ -60,7 +61,7 @@ jobs:
         run: forge snapshot --check
         id: gas-snapshot
 
-      - name: Build & Test TypeScript SDK (@economic-zone/checkout)
+      - name: Build & Test TypeScript SDK (@senhor-f/checkout)
         run: |
           cd pkg/checkout
           bun install
@@ -68,7 +69,7 @@ jobs:
           bun test
         id: sdk-tests
 
-      - name: Build Drop-in React Widget & Demo App (@economic-zone/demo-widget)
+      - name: Build Drop-in React Widget & Demo App (@senhor-f/demo-widget)
         run: |
           cd apps/demo-widget
           bun install

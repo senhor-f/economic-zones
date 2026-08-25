@@ -1,5 +1,5 @@
 {
-  "name": "@economic-zone/demo-widget",
+  "name": "@senhor-f/demo-widget",
   "private": true,
   "version": "2.1.0",
   "type": "module",
@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@economic-zone/checkout": "workspace:*",
+    "@senhor-f/checkout": "workspace:*",
     "clsx": "^2.1.1",
     "lucide-react": "^0.475.0",
     "react": "^18.3.1",

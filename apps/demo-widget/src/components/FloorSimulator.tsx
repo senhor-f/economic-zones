@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { TrendingUp, Droplets, Lock, Clock } from 'lucide-react';
-import { EconomicZoneClient } from '@economic-zone/checkout';
+import { EconomicZoneClient } from '@senhor-f/checkout';
 
 export const FloorSimulator: React.FC = () => {
   const [drippedYieldUSDC, setDrippedYieldUSDC] = useState<number>(25000);

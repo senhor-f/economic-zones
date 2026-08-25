@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import { ZoneCheckoutClient, ZoneClient } from '../src/client';
 
-describe('@economic-zone/checkout SDK', () => {
+describe('@senhor-f/checkout SDK', () => {
   const routerAddress = '0x1111111111111111111111111111111111111111' as const;
   const client = new ZoneCheckoutClient(routerAddress);
 
