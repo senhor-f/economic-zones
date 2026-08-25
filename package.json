@@ -3,10 +3,16 @@
   "version": "2.1.0",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "pkg/*",
+    "apps/*"
+  ],
   "scripts": {
     "test": "forge test",
     "test:sdk": "cd pkg/checkout && bun test",
     "build:sdk": "cd pkg/checkout && bun run build",
+    "widget:dev": "cd apps/demo-widget && vite",
+    "widget:build": "cd apps/demo-widget && bun run build",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"

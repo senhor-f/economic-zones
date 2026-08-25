@@ -1,0 +1,10 @@
+{
+  "detectors_to_exclude": "naming-convention,low-level-calls",
+  "exclude_informational": false,
+  "exclude_low": false,
+  "filter_paths": "lib,test,script,node_modules",
+  "solc_remaps": [
+    "solady/=lib/solady/src/",
+    "forge-std/=lib/forge-std/src/"
+  ]
+}
