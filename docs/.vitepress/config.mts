@@ -5,6 +5,7 @@ export default withMermaid(
   defineConfig({
     title: 'Economic Zones Protocol',
     description: 'Sovereign On-Chain Economic Zones with Unbreachable Floor Price, AI Agent Micropayments (x402), SaaS Subscriptions, and Yield-Backed Treasury Bóvedas.',
+    base: '/economic-zones/',
     srcDir: '.',
     outDir: '.vitepress/dist',
     cleanUrls: true,
