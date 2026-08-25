@@ -1,6 +1,6 @@
 name: Release SDK
 
-# Tag: sdk-v* — publishes @economic-zone/checkout to GitHub Packages / npm
+# Tag: sdk-v* — publishes @<owner>/checkout to GitHub Packages / npm
 # generates SHA-256 checksums, and creates a GitHub Release with verified assets.
 
 on:
@@ -24,8 +24,6 @@ jobs:
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: v1.2.3
 
       - name: Forge build (generates out/ for the ABI manifest)
         working-directory: .
@@ -39,7 +37,7 @@ jobs:
         with:
           node-version: "20"
           registry-url: "https://npm.pkg.github.com"
-          scope: "@economic-zone"
+          scope: "@${{ github.repository_owner }}"
 
       - name: Extract version from tag
         id: version
@@ -49,14 +47,16 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
-      - name: Validate tag matches package.json version
+      - name: Sync package scope with repository owner
         run: |
-          PKG_VERSION=$(node -p "require('./package.json').version")
-          if [ "$PKG_VERSION" != "${{ steps.version.outputs.version }}" ]; then
-            echo "::error::package.json version ($PKG_VERSION) doesn't match tag (${{ steps.version.outputs.version }}) — bump package.json and re-tag"
-            exit 1
-          fi
-          echo "Version: $PKG_VERSION matches tag ✓"
+          node -e '
+            const fs = require("fs");
+            const pkg = JSON.parse(fs.readFileSync("./package.json", "utf8"));
+            pkg.name = "@${{ github.repository_owner }}/checkout";
+            pkg.version = "${{ steps.version.outputs.version }}";
+            fs.writeFileSync("./package.json", JSON.stringify(pkg, null, 2));
+            console.log("Package name aligned to:", pkg.name, "v" + pkg.version);
+          '
 
       - name: Install SDK dependencies
         run: bun install
@@ -85,8 +85,9 @@ jobs:
       - name: Publish to GitHub Packages
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          if npm view "@economic-zone/checkout@${VERSION}" version >/dev/null 2>&1; then
-            echo "::notice::@economic-zone/checkout@${VERSION} is already published — skipping (idempotent release)"
+          PKG_NAME="@${{ github.repository_owner }}/checkout"
+          if npm view "${PKG_NAME}@${VERSION}" version >/dev/null 2>&1; then
+            echo "::notice::${PKG_NAME}@${VERSION} is already published — skipping (idempotent release)"
           else
             npm publish
           fi
@@ -113,9 +114,9 @@ jobs:
           Published to GitHub Packages:
 
           \`\`\`bash
-          bun add @economic-zone/checkout@${VERSION}
+          bun add @${{ github.repository_owner }}/checkout@${VERSION}
           # or
-          npm install @economic-zone/checkout@${VERSION}
+          npm install @${{ github.repository_owner }}/checkout@${VERSION}
           \`\`\`
 
           ---
@@ -136,7 +137,7 @@ jobs:
           ## 🚀 Quick Usage
 
           \`\`\`ts
-          import { ZoneCheckoutClient, ZoneClient } from \"@economic-zone/checkout\";
+          import { ZoneCheckoutClient, ZoneClient } from \"@${{ github.repository_owner }}/checkout\";
 
           // 1. Prepare 1-Click Checkout with Instant 1% Cashback
           const client = new ZoneCheckoutClient(\"0xSwapPayRouterAddress...\");

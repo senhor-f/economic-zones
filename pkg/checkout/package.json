@@ -1,5 +1,5 @@
 {
-  "name": "@economic-zone/checkout",
+  "name": "@senhor-f/checkout",
   "version": "2.1.0",
   "description": "Comprehensive TypeScript SDK and 1-click checkout client for Economic Zones Protocol ($HNY v2)",
   "type": "module",
@@ -9,6 +9,14 @@
     "dist",
     "README.md"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/senhor-f/economic-zones.git"
+  },
   "scripts": {
     "build:abis": "node scripts/buildAbis.mjs",
     "build": "bun run build:abis && tsc && cp src/abis.json src/abis.jsonl dist/",
@@ -25,7 +33,7 @@
     "eip-4844",
     "xerc20"
   ],
-  "author": "Economic Zones Protocol",
+  "author": "senhor-f",
   "license": "MIT",
   "dependencies": {
     "viem": "^2.21.0"

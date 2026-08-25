@@ -20,8 +20,6 @@ jobs:
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: v1.2.3
 
       - name: Build Contracts
         run: forge build --sizes
