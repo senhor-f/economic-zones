@@ -1,7 +1,7 @@
 name: Release SDK
 
 # Tag: sdk-v* — publishes @economic-zone/checkout to GitHub Packages / npm
-# and creates a GitHub Release with full usage instructions.
+# generates SHA-256 checksums, and creates a GitHub Release with verified assets.
 
 on:
   push:
@@ -67,6 +67,21 @@ jobs:
       - name: Test SDK
         run: bun test
 
+      - name: Package SDK Tarball & Generate SHA-256 Checksums
+        id: checksums
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          TARBALL=$(npm pack)
+          echo "tarball=$TARBALL" >> "$GITHUB_OUTPUT"
+          
+          # Generate SHA-256 checksums file
+          sha256sum "$TARBALL" src/abis.json src/abis.jsonl > CHECKSUMS-SHA256.txt
+          cat CHECKSUMS-SHA256.txt
+          
+          # Read tarball hash for release notes
+          TARBALL_SHA=$(sha256sum "$TARBALL" | awk '{print $1}')
+          echo "tarball_sha=$TARBALL_SHA" >> "$GITHUB_OUTPUT"
+
       - name: Publish to GitHub Packages
         run: |
           VERSION="${{ steps.version.outputs.version }}"
@@ -78,13 +93,20 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create GitHub Release
+      - name: Create GitHub Release with Checksums & Assets
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="${{ steps.version.outputs.tag }}"
           VERSION="${{ steps.version.outputs.version }}"
+          TARBALL="${{ steps.checksums.outputs.tarball }}"
+          TARBALL_SHA="${{ steps.checksums.outputs.tarball_sha }}"
+
           gh release create "$TAG" \
+            "$TARBALL" \
+            "CHECKSUMS-SHA256.txt" \
+            "src/abis.json" \
+            "src/abis.jsonl" \
             --title "economic-zone-sdk v${VERSION}" \
             --notes "## Install
 
@@ -95,6 +117,23 @@ jobs:
           # or
           npm install @economic-zone/checkout@${VERSION}
           \`\`\`
+
+          ---
+
+          ## 🔒 Cryptographic Checksums (SHA-256)
+
+          | Artifact | SHA-256 Hash |
+          | :--- | :--- |
+          | \`$TARBALL\` | \`$TARBALL_SHA\` |
+
+          \`\`\`bash
+          # Verify integrity
+          sha256sum -c CHECKSUMS-SHA256.txt
+          \`\`\`
+
+          ---
+
+          ## 🚀 Quick Usage
 
           \`\`\`ts
           import { ZoneCheckoutClient, ZoneClient } from \"@economic-zone/checkout\";
