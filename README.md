@@ -2,34 +2,37 @@
 
 > **Autonomous Sovereign Economic Zones with Unbreachable Floor Price, AI Agent Micropayments (x402), SaaS Subscriptions, and Yield-Backed Treasury Bóvedas.**
 
-[![Solidity 0.8.28](https://img.shields.io/badge/Solidity-0.8.28-blue.svg)](https://soliditylang.org/)[![Foundry Tests](https://img.shields.io/badge/Foundry-53%2F53%20Passing-brightgreen.svg)](https://book.getfoundry.sh/)
+[![Foundry Tests](https://img.shields.io/badge/Foundry-60%2F60%20Passing-brightgreen.svg)](https://book.getfoundry.sh/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
 
 ## 🏛️ Architecture Overview
 
-The **Economic Zones Protocol** transforms decentralized communities and dApp ecosystems into high-velocity economic hubs powered by the native medium of exchange ($HNY$).
+The **Economic Zones Protocol** operates as a sovereign **Hub-and-Spoke** network connecting an Ethereum L1 Central Reserve with high-frequency L2 Execution Rollups (Base / OP Stack) powered by $HNY$.
 
 ```
-                                  ┌────────────────────────────────────────────────┐
-                                  │           $HNY CENTRAL RESERVE MATRIX          │
-                                  │   Augmented Linear Bonding Curve + Unbreachable│
-                                  │           Floor + Streaming Floor Dripper      │
-                                  └───────────────────────┬────────────────────────┘
-                                                          │
-         ┌────────────────────────────────────────────────┼────────────────────────────────────────────────┐
-         ▼                                                ▼                                                ▼
-┌──────────────────────────────┐        ┌──────────────────────────────────┐        ┌──────────────────────────────┐
-│ 1. COMMERCE & PAYMENTS       │        │ 2. REBALANCING & TREASURY        │        │ 3. GOVERNANCE & REPUTATION   │
-│ • ZonePaymentGateway.sol     │        │ • TreasuryYieldVault.sol (ERC4626)│       │ • PoCRetroPGFPool.sol        │
-│ • SwapPayRouter.sol (1-Click)│        │ • FloorDripper.sol (Linear Yield)│        │ • MilestoneFutarchy.sol      │
-│ • SubscriptionManager.sol    │        │ • DeluxeAssetRebalancer.sol (GDA)│        │ • ConvictionVoting.sol       │
-│ • ZoneRevenueSplitter.sol    │        │ • POLManager.sol (DEX Liquidity) │        │ • FloorLockedSavings.sol     │
-│ • ContinuousPayrollStreamer  │        │ • StakedHNY.sol (sHNY ERC-4626)  │        │ • CitizenAttestor.sol (EAS)  │
-│ • x402Settler.sol (AI Agents)│        │ • OracleCircuitBreaker.sol       │        │ • CustomTariffHook.sol       │
-│ • ProjectCollateral.sol      │        │ • ZoneClearingHouse.sol          │        │ • CitizenTierManager.sol     │
-└──────────────────────────────┘        └──────────────────────────────────┘        └──────────────────────────────┘
+                                  ┌──────────────────────────────────────────────────────────┐
+                                  │                  ETHEREUM L1 (SETTLEMENT)                │
+                                  │  • Augmented Bonding Curve ($HNY Central Reserve)        │
+                                  │  • Treasury Yield Vault (ERC-4626 Millonaria en USDC)    │
+                                  │  • L1BlobCommerceVerifier.sol (KZG Precompile 0x0A)      │
+                                  │  • xHNYLockbox.sol (ERC-7281 Sovereign Rate Limiting)    │
+                                  │  • Unbreachable Floor Price & Governance                 │
+                                  └────────────────────────────┬─────────────────────────────┘
+                                                               │
+                                  ┌────────────────────────────┴─────────────────────────────┐
+                                  │  EIP-4844 BLOBS (DA) & CANONICAL L2 STATE ROOTS (KZG)    │
+                                  └────────────────────────────┬─────────────────────────────┘
+                                                               │
+                                  ┌────────────────────────────┴─────────────────────────────┐
+                                  │             BASE / OP STACK L2 (COMMERCE)                │
+                                  │  • ZonePaymentGateway (Pagos en milisegundos)            │
+                                  │  • ZoneRevenueSplitter (Auto-staking en sHNY)            │
+                                  │  • ContinuousPayrollStreamer (Salarios por segundo)      │
+                                  │  • x402Settler (Microtransacciones de Agentes IA)        │
+                                  │  • L2CommerceBatcher.sol (Comprime y emite Blobs)        │
+                                  └──────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -68,14 +71,19 @@ Tributes start low to bootstrap organic adoption and scale with TVL:
 * [`StakedHNY.sol`](src/token/StakedHNY.sol): ERC-4626 liquid staking vault autocompounding yields from exit tributes and POL fee harvesting.
 * [`FloorLockedSavings.sol`](src/zones/FloorLockedSavings.sol): Time-locked savings providing up to 4x boosted voting power and +100 bps checkout cashback.
 
-### 🏛️ 5. Fiscal Sovereignty & Multi-Zone Clearing
+### 🌐 5. Cross-Chain EIP-4844 Blobs & xERC20 Lockbox
+* [`L1BlobCommerceVerifier.sol`](src/crosschain/L1BlobCommerceVerifier.sol): Verifies L2 commercial sales volume on Ethereum L1 using the EIP-4844 KZG Point Evaluation Precompile (`0x0A`).
+* [`L2CommerceBatcher.sol`](src/crosschain/L2CommerceBatcher.sol): Aggregates high-frequency L2 commerce volume and routes collected taxes/tributes to L1 Floor Dripper.
+* [`xHNYLockbox.sol`](src/crosschain/xHNYLockbox.sol): ERC-7281 sovereign cross-chain custody on L1 with daily rate-limiting to eliminate liquidity fragmentation.
+
+### 🏛️ 6. Fiscal Sovereignty & Multi-Zone Clearing
 * [`CustomTariffHook.sol`](src/hooks/CustomTariffHook.sol): Category VAT and cross-zone customs tariffs routed directly to zone treasuries.
 * [`ZoneClearingHouse.sol`](src/zones/ZoneClearingHouse.sol): Bilateral net clearing and periodic settlement between sovereign economic zones.
 
-### 🤖 6. Autonomous AI Agent Micropayments (HTTP x402)
+### 🤖 7. Autonomous AI Agent Micropayments (HTTP x402)
 * [`x402Settler.sol`](src/payments/x402Settler.sol): Native support for **Coinbase AgentKit** and **Claude MCP** servers to settle machine-to-machine API queries in micro-amounts of $HNY$ with EIP-712 signatures.
 
-### 🏦 7. Principal-Protected DAO Treasury Bóvedas
+### 🏦 8. Principal-Protected DAO Treasury Bóvedas
 * [`TreasuryYieldVault.sol`](src/rebalancing/TreasuryYieldVault.sol): Institutional ERC-4626 vault with **100% principal protection 1:1 in USDC** + 80% interest paid to depositors and 20% floor contribution.
 
 ---
@@ -98,8 +106,14 @@ make test-invariant
 ### Test Suite Summary
 
 ```
-Ran 37 test suites: 53 passed, 0 failed, 0 skipped (53 total tests)
+Ran 41 test suites: 60 passed, 0 failed, 0 skipped (60 total tests)
 
+✅ [PASS] test_VerifyBlobCommerceBatch_AccumulatesVolume (L1BlobCommerceVerifierTest)
+✅ [PASS] test_RevertWhen_DoubleVerifyingSameBatch (L1BlobCommerceVerifierTest)
+✅ [PASS] test_FinalizeEpochBatch_AndBridgeTributes (L2CommerceBatcherTest)
+✅ [PASS] test_Lock_And_UnlockWithinRateLimit (xHNYLockboxTest)
+✅ [PASS] test_RevertWhen_DailyRateLimitExceeded (xHNYLockboxTest)
+✅ [PASS] test_PackAndUnpackVersion (ProtocolVersionTest)
 ✅ [PASS] test_Deposit_DistributeRewards_AndRedeemWithYield (StakedHNYTest)
 ✅ [PASS] test_CreateLock_AndNormalUnlock (FloorLockedSavingsTest)
 ✅ [PASS] test_EarlyExit_DeductsPenaltyToCurve (FloorLockedSavingsTest)
