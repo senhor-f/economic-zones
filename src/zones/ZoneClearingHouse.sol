@@ -23,10 +23,7 @@ contract ZoneClearingHouse is Ownable, ReentrancyGuard, Versioned {
         int256 newNetBalance
     );
     event BilateralSettled(
-        uint256 indexed debtorZoneId,
-        uint256 indexed creditorZoneId,
-        address indexed token,
-        uint256 settledAmount
+        uint256 indexed debtorZoneId, uint256 indexed creditorZoneId, address indexed token, uint256 settledAmount
     );
     event SettlementVaultUpdated(uint256 indexed zoneId, address indexed vault);
 
@@ -72,12 +69,11 @@ contract ZoneClearingHouse is Ownable, ReentrancyGuard, Versioned {
     /// @param targetZoneId Zone importing the good/service (debtor)
     /// @param token Settlement currency
     /// @param amount Transaction amount
-    function recordCrossZoneTrade(
-        uint256 originZoneId,
-        uint256 targetZoneId,
-        address token,
-        uint256 amount
-    ) external nonReentrant returns (int256 netBalance) {
+    function recordCrossZoneTrade(uint256 originZoneId, uint256 targetZoneId, address token, uint256 amount)
+        external
+        nonReentrant
+        returns (int256 netBalance)
+    {
         if (!isAuthorizedRecorder[msg.sender] && msg.sender != owner()) revert UnauthorizedRecorder();
         if (originZoneId == targetZoneId) revert SameZone();
         if (amount == 0) revert ZeroAmount();
@@ -99,11 +95,11 @@ contract ZoneClearingHouse is Ownable, ReentrancyGuard, Versioned {
     /// @param creditorZoneId Zone to receive payment
     /// @param debtorZoneId Zone owing payment
     /// @param token Settlement currency
-    function settleNetBalance(
-        uint256 creditorZoneId,
-        uint256 debtorZoneId,
-        address token
-    ) external nonReentrant returns (uint256 settledAmount) {
+    function settleNetBalance(uint256 creditorZoneId, uint256 debtorZoneId, address token)
+        external
+        nonReentrant
+        returns (uint256 settledAmount)
+    {
         int256 balance = netBilateralBalances[creditorZoneId][debtorZoneId];
         if (balance <= 0) revert NoSettlementRequired();
 

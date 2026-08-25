@@ -75,12 +75,9 @@ contract CustomTariffHook is Ownable, ReentrancyGuard, Versioned {
     //////////////////////////////////////////////////////////////*/
 
     /// @notice Configures or updates the fiscal policy for a specific Zone
-    function configureZonePolicy(
-        uint256 zoneId,
-        address zoneTreasury,
-        address zoneAdmin,
-        uint16 crossZoneTariffBps
-    ) external {
+    function configureZonePolicy(uint256 zoneId, address zoneTreasury, address zoneAdmin, uint16 crossZoneTariffBps)
+        external
+    {
         if (msg.sender != owner() && msg.sender != zoneAdmins[zoneId]) revert UnauthorizedZoneAdmin();
         if (zoneTreasury == address(0)) revert ZeroAddress();
         if (crossZoneTariffBps > 2000) revert InvalidRate(); // Max 20% tariff
@@ -114,12 +111,11 @@ contract CustomTariffHook is Ownable, ReentrancyGuard, Versioned {
     //////////////////////////////////////////////////////////////*/
 
     /// @notice Calculates the total applicable tariff (VAT + cross-zone tariff)
-    function calculateTariff(
-        uint256 zoneId,
-        uint256 grossAmount,
-        uint8 categoryId,
-        bool isCrossZone
-    ) public view returns (uint256 tariffAmount, uint256 netMerchantAmount) {
+    function calculateTariff(uint256 zoneId, uint256 grossAmount, uint8 categoryId, bool isCrossZone)
+        public
+        view
+        returns (uint256 tariffAmount, uint256 netMerchantAmount)
+    {
         ZoneFiscalPolicy storage policy = zonePolicies[zoneId];
         if (!policy.isActive || grossAmount == 0) {
             return (0, grossAmount);

@@ -53,15 +53,8 @@ contract CustomTariffHookTest is Test {
         // 3. Execute collectTariff for cross-zone transaction
         vm.startPrank(payer);
         hny.approve(address(hook), tariffCross);
-        (uint256 collected, uint256 netMerchant) = hook.collectTariff(
-            zoneId,
-            address(hny),
-            payer,
-            merchant,
-            gross,
-            0,
-            true
-        );
+        (uint256 collected, uint256 netMerchant) =
+            hook.collectTariff(zoneId, address(hny), payer, merchant, gross, 0, true);
         vm.stopPrank();
 
         assertEq(collected, 800e18);

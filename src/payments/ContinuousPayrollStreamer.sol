@@ -46,7 +46,13 @@ contract ContinuousPayrollStreamer is Ownable, ReentrancyGuard, Versioned {
         uint256 ratePerSecond
     );
     event TokensWithdrawn(uint256 indexed streamId, address indexed recipient, uint256 netAmount, uint256 taxAmount);
-    event StreamCanceled(uint256 indexed streamId, address indexed payer, address indexed recipient, uint256 payerRefund, uint256 recipientVested);
+    event StreamCanceled(
+        uint256 indexed streamId,
+        address indexed payer,
+        address indexed recipient,
+        uint256 payerRefund,
+        uint256 recipientVested
+    );
     event StreamPaused(uint256 indexed streamId);
     event StreamResumed(uint256 indexed streamId);
 
@@ -179,7 +185,11 @@ contract ContinuousPayrollStreamer is Ownable, ReentrancyGuard, Versioned {
     /// @notice Withdraws vested salary tokens
     /// @param streamId Stream ID
     /// @param amount Amount to withdraw
-    function withdrawFromStream(uint256 streamId, uint256 amount) external nonReentrant returns (uint256 netPaid, uint256 taxPaid) {
+    function withdrawFromStream(uint256 streamId, uint256 amount)
+        external
+        nonReentrant
+        returns (uint256 netPaid, uint256 taxPaid)
+    {
         Stream storage stream = streams[streamId];
         if (stream.recipient != msg.sender) revert NotStreamRecipient();
         if (stream.isPaused) revert StreamIsPaused();
@@ -209,7 +219,11 @@ contract ContinuousPayrollStreamer is Ownable, ReentrancyGuard, Versioned {
     //////////////////////////////////////////////////////////////*/
 
     /// @notice Cancels an active stream, returning unvested funds to the payer
-    function cancelStream(uint256 streamId) external nonReentrant returns (uint256 payerRefund, uint256 recipientVested) {
+    function cancelStream(uint256 streamId)
+        external
+        nonReentrant
+        returns (uint256 payerRefund, uint256 recipientVested)
+    {
         Stream storage stream = streams[streamId];
         if (msg.sender != stream.payer && msg.sender != owner()) revert NotStreamPayer();
         if (stream.isCanceled) revert StreamIsCanceled();

@@ -14,10 +14,7 @@ contract L1BlobCommerceVerifier is Ownable, ReentrancyGuard, Versioned {
     //////////////////////////////////////////////////////////////*/
 
     event CommerceVolumeVerified(
-        uint256 indexed epoch,
-        uint256 indexed projectId,
-        uint256 volumeAmount,
-        bytes32 indexed versionedHash
+        uint256 indexed epoch, uint256 indexed projectId, uint256 volumeAmount, bytes32 indexed versionedHash
     );
 
     /*//////////////////////////////////////////////////////////////
@@ -91,13 +88,7 @@ contract L1BlobCommerceVerifier is Ownable, ReentrancyGuard, Versioned {
         // [64..95]   value y (32 bytes)
         // [96..143]  commitment (48 bytes)
         // [144..191] proof (48 bytes)
-        bytes memory precompileInput = abi.encodePacked(
-            versionedHash,
-            pointZ,
-            valueY,
-            commitment,
-            proof
-        );
+        bytes memory precompileInput = abi.encodePacked(versionedHash, pointZ, valueY, commitment, proof);
 
         // 3. Call Point Evaluation Precompile
         (bool callOk, bytes memory returnData) = pointEvaluationPrecompile.staticcall(precompileInput);

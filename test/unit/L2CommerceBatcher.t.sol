@@ -37,14 +37,8 @@ contract L2CommerceBatcherTest is Test {
 
         assertEq(batcher.currentEpoch(), epoch);
 
-        (
-            uint256 bEpoch,
-            bytes32 bRoot,
-            uint256 bVolume,
-            uint256 bTax,
-            uint256 bProjects,
-            uint256 closedAt
-        ) = batcher.epochBatches(epoch);
+        (uint256 bEpoch, bytes32 bRoot, uint256 bVolume, uint256 bTax, uint256 bProjects, uint256 closedAt) =
+            batcher.epochBatches(epoch);
 
         assertEq(bEpoch, epoch);
         assertEq(bRoot, root);

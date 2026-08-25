@@ -57,8 +57,8 @@ contract DeployProduction is Script {
             deployer,
             1e18, // 1.0 USDC basePrice
             1e12, // Linear slope
-            50,   // 0.5% entry tribute
-            100   // 1.0% exit tribute
+            50, // 0.5% entry tribute
+            100 // 1.0% exit tribute
         );
 
         hny.setMinter(address(curve), true);
@@ -67,44 +67,21 @@ contract DeployProduction is Script {
         ProjectRegistry registry = new ProjectRegistry(deployer);
         ContributionLedger ledger = new ContributionLedger(deployer);
 
-        ZonePaymentGateway gateway = new ZonePaymentGateway(
-            address(hny),
-            address(registry),
-            address(ledger),
-            treasuryVault,
-            deployer
-        );
+        ZonePaymentGateway gateway =
+            new ZonePaymentGateway(address(hny), address(registry), address(ledger), treasuryVault, deployer);
 
-        ZoneRevenueSplitter splitter = new ZoneRevenueSplitter(
-            address(hny),
-            address(sHny),
-            address(registry),
-            treasuryVault,
-            deployer
-        );
+        ZoneRevenueSplitter splitter =
+            new ZoneRevenueSplitter(address(hny), address(sHny), address(registry), treasuryVault, deployer);
 
         ContinuousPayrollStreamer payroll = new ContinuousPayrollStreamer(deployer);
 
-        SwapPayRouter swapRouter = new SwapPayRouter(
-            address(hny),
-            reserveToken,
-            address(curve),
-            address(gateway),
-            deployer
-        );
+        SwapPayRouter swapRouter =
+            new SwapPayRouter(address(hny), reserveToken, address(curve), address(gateway), deployer);
 
-        SubscriptionManager subManager = new SubscriptionManager(
-            address(hny),
-            address(registry),
-            address(gateway),
-            deployer
-        );
+        SubscriptionManager subManager =
+            new SubscriptionManager(address(hny), address(registry), address(gateway), deployer);
 
-        x402Settler x402 = new x402Settler(
-            address(hny),
-            address(gateway),
-            deployer
-        );
+        x402Settler x402 = new x402Settler(address(hny), address(gateway), deployer);
 
         ProjectCollateral collateral = new ProjectCollateral(
             reserveToken,
@@ -125,24 +102,11 @@ contract DeployProduction is Script {
             deployer
         );
 
-        TreasuryYieldVault treasuryVaultContract = new TreasuryYieldVault(
-            reserveToken,
-            address(curve),
-            deployer
-        );
+        TreasuryYieldVault treasuryVaultContract = new TreasuryYieldVault(reserveToken, address(curve), deployer);
 
-        POLManager pol = new POLManager(
-            address(hny),
-            reserveToken,
-            treasuryVault,
-            deployer
-        );
+        POLManager pol = new POLManager(address(hny), reserveToken, treasuryVault, deployer);
 
-        FloorLockedSavings savings = new FloorLockedSavings(
-            address(hny),
-            address(curve),
-            deployer
-        );
+        FloorLockedSavings savings = new FloorLockedSavings(address(hny), address(curve), deployer);
 
         // 6. Fiscal Sovereignty & Inter-Zone Clearing
         CustomTariffHook tariffHook = new CustomTariffHook(deployer);

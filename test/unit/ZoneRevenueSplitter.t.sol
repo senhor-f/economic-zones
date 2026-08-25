@@ -27,13 +27,7 @@ contract ZoneRevenueSplitterTest is Test {
         hny = new HNYToken(owner);
         sHny = new StakedHNY(address(hny), owner);
         registry = new ProjectRegistry(owner);
-        splitter = new ZoneRevenueSplitter(
-            address(hny),
-            address(sHny),
-            address(registry),
-            treasuryVault,
-            owner
-        );
+        splitter = new ZoneRevenueSplitter(address(hny), address(sHny), address(registry), treasuryVault, owner);
 
         hny.setMinter(owner, true);
         hny.mint(customer, 50_000e18);
@@ -54,8 +48,8 @@ contract ZoneRevenueSplitterTest is Test {
         splitter.setSplitConfig(
             projectId,
             merchant, // primary beneficiary for sHNY
-            1000,     // 10% auto-stake
-            500,      // 5% treasury tax
+            1000, // 10% auto-stake
+            500, // 5% treasury tax
             recipients
         );
 

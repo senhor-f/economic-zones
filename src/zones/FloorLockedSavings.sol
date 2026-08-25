@@ -32,7 +32,9 @@ contract FloorLockedSavings is Ownable, ReentrancyGuard, Versioned {
                                  EVENTS
     //////////////////////////////////////////////////////////////*/
 
-    event LockCreated(uint256 indexed lockId, address indexed owner, uint256 amount, uint256 unlockTime, uint256 boostedAmount);
+    event LockCreated(
+        uint256 indexed lockId, address indexed owner, uint256 amount, uint256 unlockTime, uint256 boostedAmount
+    );
     event LockExtended(uint256 indexed lockId, uint256 newUnlockTime, uint256 newBoostedAmount);
     event LockAmountIncreased(uint256 indexed lockId, uint256 addedAmount, uint256 newBoostedAmount);
     event LockWithdrawn(uint256 indexed lockId, address indexed owner, uint256 amount);
@@ -230,8 +232,8 @@ contract FloorLockedSavings is Ownable, ReentrancyGuard, Versioned {
     function getUserCashbackBonusBps(address user) external view returns (uint256 bonusBps) {
         uint256 power = userActiveVotingPower[user];
         if (power >= 100_000e18) return 100; // +1.0% bonus for Whales
-        if (power >= 25_000e18) return 50;  // +0.5% bonus for Citizens
-        if (power >= 5_000e18) return 25;   // +0.25% bonus for Supporters
+        if (power >= 25_000e18) return 50; // +0.5% bonus for Citizens
+        if (power >= 5_000e18) return 25; // +0.25% bonus for Supporters
         return 0;
     }
 

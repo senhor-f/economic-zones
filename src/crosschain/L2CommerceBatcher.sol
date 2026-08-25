@@ -28,7 +28,9 @@ contract L2CommerceBatcher is Ownable, ReentrancyGuard, Versioned {
                                  EVENTS
     //////////////////////////////////////////////////////////////*/
 
-    event BatchFinalized(uint256 indexed epoch, bytes32 indexed batchRoot, uint256 totalVolume, uint256 totalTaxCollected);
+    event BatchFinalized(
+        uint256 indexed epoch, bytes32 indexed batchRoot, uint256 totalVolume, uint256 totalTaxCollected
+    );
     event FundsBridgedToL1(address indexed token, address indexed l1Receiver, uint256 amount);
     event SequencerAuthorized(address indexed sequencer, bool status);
 
@@ -81,7 +83,9 @@ contract L2CommerceBatcher is Ownable, ReentrancyGuard, Versioned {
         uint256 totalTaxCollected,
         uint256 projectCount
     ) external nonReentrant {
-        if (!isAuthorizedSequencer[msg.sender] && msg.sender != owner()) revert UnauthorizedSequencer();
+        if (!isAuthorizedSequencer[msg.sender] && msg.sender != owner()) {
+            revert UnauthorizedSequencer();
+        }
         if (epochBatches[epoch].closedAt != 0) revert EpochAlreadyClosed();
 
         epochBatches[epoch] = EpochBatch({

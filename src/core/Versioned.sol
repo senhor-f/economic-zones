@@ -16,14 +16,7 @@ abstract contract Versioned {
     function getVersionMetadata()
         external
         view
-        returns (
-            bytes4 magic,
-            uint8 major,
-            uint8 minor,
-            uint8 patch,
-            uint48 deployedAt,
-            bytes19 contractName
-        )
+        returns (bytes4 magic, uint8 major, uint8 minor, uint8 patch, uint48 deployedAt, bytes19 contractName)
     {
         return ProtocolVersion.unpack(PROTOCOL_VERSION);
     }

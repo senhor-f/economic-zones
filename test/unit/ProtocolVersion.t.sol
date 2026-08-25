@@ -17,14 +17,8 @@ contract ProtocolVersionTest is Test {
         bytes32 tag = mock.PROTOCOL_VERSION();
         assertTrue(tag != bytes32(0));
 
-        (
-            bytes4 magic,
-            uint8 major,
-            uint8 minor,
-            uint8 patch,
-            uint48 deployedAt,
-            bytes19 name
-        ) = mock.getVersionMetadata();
+        (bytes4 magic, uint8 major, uint8 minor, uint8 patch, uint48 deployedAt, bytes19 name) =
+            mock.getVersionMetadata();
 
         assertEq(magic, bytes4("HNY2"));
         assertEq(major, 2);

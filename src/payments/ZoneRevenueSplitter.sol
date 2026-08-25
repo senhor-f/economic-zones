@@ -75,13 +75,9 @@ contract ZoneRevenueSplitter is Ownable, ReentrancyGuard, Versioned {
                                CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    constructor(
-        address _hnyToken,
-        address _stakedHny,
-        address _projectRegistry,
-        address _treasuryVault,
-        address _owner
-    ) Versioned("ZoneRevenueSplit") {
+    constructor(address _hnyToken, address _stakedHny, address _projectRegistry, address _treasuryVault, address _owner)
+        Versioned("ZoneRevenueSplit")
+    {
         if (
             _hnyToken == address(0) || _stakedHny == address(0) || _projectRegistry == address(0)
                 || _treasuryVault == address(0) || _owner == address(0)

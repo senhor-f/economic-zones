@@ -33,19 +33,8 @@ library ProtocolVersion {
             // timestamp (6 bytes / 48 bits): bits 152..199 (shifted from uint48)
             // contractName (19 bytes / 152 bits): bits 0..151 (shifted right by 104 from bytes19)
             let magicMask := and(magic, 0xFFFFFFFF00000000000000000000000000000000000000000000000000000000)
-            let header := or(
-                magicMask,
-                or(
-                    shl(216, major),
-                    or(
-                        shl(208, minor),
-                        or(
-                            shl(200, patch),
-                            shl(152, deployedTime)
-                        )
-                    )
-                )
-            )
+            let header :=
+                or(magicMask, or(shl(216, major), or(shl(208, minor), or(shl(200, patch), shl(152, deployedTime)))))
             let nameBits := shr(104, contractName)
             tag := or(header, nameBits)
         }
@@ -55,14 +44,7 @@ library ProtocolVersion {
     function unpack(bytes32 tag)
         internal
         pure
-        returns (
-            bytes4 magic,
-            uint8 major,
-            uint8 minor,
-            uint8 patch,
-            uint48 deployedAt,
-            bytes19 contractName
-        )
+        returns (bytes4 magic, uint8 major, uint8 minor, uint8 patch, uint48 deployedAt, bytes19 contractName)
     {
         assembly {
             magic := and(tag, 0xFFFFFFFF00000000000000000000000000000000000000000000000000000000)

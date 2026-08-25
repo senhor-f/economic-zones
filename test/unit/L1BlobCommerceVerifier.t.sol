@@ -38,14 +38,7 @@ contract L1BlobCommerceVerifierTest is Test {
 
     function test_VerifyBlobCommerceBatch_AccumulatesVolume() public {
         bool verified = verifier.verifyBlobCommerceBatch(
-            versionedHash,
-            pointZ,
-            valueY,
-            commitment,
-            proof,
-            epoch,
-            projectId,
-            volumeAmount
+            versionedHash, pointZ, valueY, commitment, proof, epoch, projectId, volumeAmount
         );
 
         assertTrue(verified);
@@ -55,26 +48,12 @@ contract L1BlobCommerceVerifierTest is Test {
 
     function test_RevertWhen_DoubleVerifyingSameBatch() public {
         verifier.verifyBlobCommerceBatch(
-            versionedHash,
-            pointZ,
-            valueY,
-            commitment,
-            proof,
-            epoch,
-            projectId,
-            volumeAmount
+            versionedHash, pointZ, valueY, commitment, proof, epoch, projectId, volumeAmount
         );
 
         vm.expectRevert(L1BlobCommerceVerifier.BatchAlreadyVerified.selector);
         verifier.verifyBlobCommerceBatch(
-            versionedHash,
-            pointZ,
-            valueY,
-            commitment,
-            proof,
-            epoch,
-            projectId,
-            volumeAmount
+            versionedHash, pointZ, valueY, commitment, proof, epoch, projectId, volumeAmount
         );
     }
 
@@ -83,14 +62,7 @@ contract L1BlobCommerceVerifierTest is Test {
 
         vm.expectRevert(L1BlobCommerceVerifier.ValueMismatch.selector);
         verifier.verifyBlobCommerceBatch(
-            versionedHash,
-            pointZ,
-            wrongValueY,
-            commitment,
-            proof,
-            epoch,
-            projectId,
-            volumeAmount
+            versionedHash, pointZ, wrongValueY, commitment, proof, epoch, projectId, volumeAmount
         );
     }
 }

@@ -116,10 +116,7 @@ contract xHNYLockbox is Ownable, ReentrancyGuard, Versioned {
         if (bridge == address(0)) revert ZeroAddress();
 
         bridgeLimits[bridge] = BridgeLimits({
-            dailyLimit: dailyLimit,
-            currentDaySpent: 0,
-            lastResetTimestamp: block.timestamp,
-            isAuthorized: isAuthorized
+            dailyLimit: dailyLimit, currentDaySpent: 0, lastResetTimestamp: block.timestamp, isAuthorized: isAuthorized
         });
 
         emit BridgeLimitsUpdated(bridge, dailyLimit, isAuthorized);
