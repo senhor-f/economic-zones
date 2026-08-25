@@ -2,8 +2,7 @@
 
 > **Autonomous Sovereign Economic Zones with Unbreachable Floor Price, AI Agent Micropayments (x402), SaaS Subscriptions, and Yield-Backed Treasury Bóvedas.**
 
-[![Solidity 0.8.28](https://img.shields.io/badge/Solidity-0.8.28-blue.svg)](https://soliditylang.org/)
-[![Foundry Tests](https://img.shields.io/badge/Foundry-46%2F46%20Passing-brightgreen.svg)](https://book.getfoundry.sh/)
+[![Solidity 0.8.28](https://img.shields.io/badge/Solidity-0.8.28-blue.svg)](https://soliditylang.org/)[![Foundry Tests](https://img.shields.io/badge/Foundry-53%2F53%20Passing-brightgreen.svg)](https://book.getfoundry.sh/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
@@ -26,8 +25,10 @@ The **Economic Zones Protocol** transforms decentralized communities and dApp ec
 │ • ZonePaymentGateway.sol     │        │ • TreasuryYieldVault.sol (ERC4626)│       │ • PoCRetroPGFPool.sol        │
 │ • SwapPayRouter.sol (1-Click)│        │ • FloorDripper.sol (Linear Yield)│        │ • MilestoneFutarchy.sol      │
 │ • SubscriptionManager.sol    │        │ • DeluxeAssetRebalancer.sol (GDA)│        │ • ConvictionVoting.sol       │
-│ • x402Settler.sol (AI Agents)│        │ • POLManager.sol (DEX Liquidity) │        │ • CitizenAttestor.sol (EAS)  │
-│ • ProjectCollateral.sol      │        │ • OracleCircuitBreaker.sol       │        │ • CitizenTierManager.sol     │
+│ • ZoneRevenueSplitter.sol    │        │ • POLManager.sol (DEX Liquidity) │        │ • FloorLockedSavings.sol     │
+│ • ContinuousPayrollStreamer  │        │ • StakedHNY.sol (sHNY ERC-4626)  │        │ • CitizenAttestor.sol (EAS)  │
+│ • x402Settler.sol (AI Agents)│        │ • OracleCircuitBreaker.sol       │        │ • CustomTariffHook.sol       │
+│ • ProjectCollateral.sol      │        │ • ZoneClearingHouse.sol          │        │ • CitizenTierManager.sol     │
 └──────────────────────────────┘        └──────────────────────────────────┘        └──────────────────────────────┘
 ```
 
@@ -59,10 +60,22 @@ Tributes start low to bootstrap organic adoption and scale with TVL:
 ### 🔄 2. SaaS Subscriptions On-Chain
 * [`SubscriptionManager.sol`](src/payments/SubscriptionManager.sol): Automated recurring monthly/annual billing for AI APIs, software tools, and newsletter memberships with **recurring monthly cashback**.
 
-### 🤖 3. Autonomous AI Agent Micropayments (HTTP x402)
+### 💸 3. Merchant Revenue Splits & Continuous Payroll
+* [`ZoneRevenueSplitter.sol`](src/payments/ZoneRevenueSplitter.sol): Configurable multi-party merchant revenue distribution with auto-staking into $sHNY$ and treasury tax routing.
+* [`ContinuousPayrollStreamer.sol`](src/payments/ContinuousPayrollStreamer.sol): Second-by-second salary streaming in $HNY$ for zone workers with real-time tax withholding.
+
+### 📈 4. Liquid Staking ($sHNY$) & veHNY Lockers
+* [`StakedHNY.sol`](src/token/StakedHNY.sol): ERC-4626 liquid staking vault autocompounding yields from exit tributes and POL fee harvesting.
+* [`FloorLockedSavings.sol`](src/zones/FloorLockedSavings.sol): Time-locked savings providing up to 4x boosted voting power and +100 bps checkout cashback.
+
+### 🏛️ 5. Fiscal Sovereignty & Multi-Zone Clearing
+* [`CustomTariffHook.sol`](src/hooks/CustomTariffHook.sol): Category VAT and cross-zone customs tariffs routed directly to zone treasuries.
+* [`ZoneClearingHouse.sol`](src/zones/ZoneClearingHouse.sol): Bilateral net clearing and periodic settlement between sovereign economic zones.
+
+### 🤖 6. Autonomous AI Agent Micropayments (HTTP x402)
 * [`x402Settler.sol`](src/payments/x402Settler.sol): Native support for **Coinbase AgentKit** and **Claude MCP** servers to settle machine-to-machine API queries in micro-amounts of $HNY$ with EIP-712 signatures.
 
-### 🏦 4. Principal-Protected DAO Treasury Bóvedas
+### 🏦 7. Principal-Protected DAO Treasury Bóvedas
 * [`TreasuryYieldVault.sol`](src/rebalancing/TreasuryYieldVault.sol): Institutional ERC-4626 vault with **100% principal protection 1:1 in USDC** + 80% interest paid to depositors and 20% floor contribution.
 
 ---
@@ -85,8 +98,15 @@ make test-invariant
 ### Test Suite Summary
 
 ```
-Ran 31 test suites: 46 passed, 0 failed, 0 skipped (46 total tests)
+Ran 37 test suites: 53 passed, 0 failed, 0 skipped (53 total tests)
 
+✅ [PASS] test_Deposit_DistributeRewards_AndRedeemWithYield (StakedHNYTest)
+✅ [PASS] test_CreateLock_AndNormalUnlock (FloorLockedSavingsTest)
+✅ [PASS] test_EarlyExit_DeductsPenaltyToCurve (FloorLockedSavingsTest)
+✅ [PASS] test_ConfigureSplit_AndExecuteWithAutoStake (ZoneRevenueSplitterTest)
+✅ [PASS] test_CreateStream_Vesting_AndWithdrawalWithTax (ContinuousPayrollStreamerTest)
+✅ [PASS] test_LocalAndCrossZoneTariffAssessment (CustomTariffHookTest)
+✅ [PASS] test_CrossZoneBilateralNetting_AndSettlement (ZoneClearingHouseTest)
 ✅ [PASS] test_SubscribeAndRecurringBillingWithCashback (SubscriptionManagerTest)
 ✅ [PASS] test_DAODeposit_YieldHarvest_AndFullRedeem (TreasuryYieldVaultTest)
 ✅ [PASS] test_AgentAutonomousPayment (x402SettlerTest)

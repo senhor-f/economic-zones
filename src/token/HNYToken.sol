@@ -3,11 +3,12 @@ pragma solidity ^0.8.28;
 
 import {ERC20} from "solady/tokens/ERC20.sol";
 import {Ownable} from "solady/auth/Ownable.sol";
+import {Versioned} from "../core/Versioned.sol";
 
 /// @title HNYToken ($HNY v2)
 /// @notice Core currency, medium of exchange, and governance anchor of the Economic Zones Protocol.
 /// @dev High-performance ERC20 implementation with Solady, EIP-2612 Permit, controlled minters, and burns.
-contract HNYToken is ERC20, Ownable {
+contract HNYToken is ERC20, Ownable, Versioned {
     /*//////////////////////////////////////////////////////////////
                                  EVENTS
     //////////////////////////////////////////////////////////////*/
@@ -31,11 +32,11 @@ contract HNYToken is ERC20, Ownable {
     mapping(address => bool) public isMinter;
 
     /*//////////////////////////////////////////////////////////////
-                              CONSTRUCTOR
+                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
     /// @param initialOwner Address of the contract owner (Core Governor / Timelock)
-    constructor(address initialOwner) {
+    constructor(address initialOwner) Versioned("HNYToken") {
         if (initialOwner == address(0)) revert ZeroAddress();
         _initializeOwner(initialOwner);
     }
