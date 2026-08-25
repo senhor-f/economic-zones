@@ -1,0 +1,180 @@
+name: Release Protocol & SDK
+
+# Unified Release Trigger: v*
+# Builds contracts, packages TypeScript SDK, generates cryptographic SHA-256 checksums,
+# publishes @<owner>/checkout to GitHub Packages, and creates a single unified GitHub Release.
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Build Contracts
+        run: forge build --sizes
+
+      - name: Run Foundry Test Suite
+        run: forge test -vvv
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@${{ github.repository_owner }}"
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Build & Package TypeScript SDK
+        id: sdk
+        working-directory: pkg/checkout
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          
+          # Sync package.json version and scope with repository owner
+          node -e '
+            const fs = require("fs");
+            const pkg = JSON.parse(fs.readFileSync("./package.json", "utf8"));
+            pkg.name = "@${{ github.repository_owner }}/checkout";
+            pkg.version = "'"$VERSION"'";
+            fs.writeFileSync("./package.json", JSON.stringify(pkg, null, 2));
+            console.log("Aligned package name:", pkg.name, "version:", pkg.version);
+          '
+          
+          bun install
+          bun run build
+          bun test
+          
+          TARBALL=$(npm pack)
+          echo "tarball=$TARBALL" >> "$GITHUB_OUTPUT"
+          
+          # Copy tarball to root for release bundling
+          cp "$TARBALL" ../../
+          cp src/abis.json ../../
+          cp src/abis.jsonl ../../
+
+      - name: Publish SDK to GitHub Packages
+        working-directory: pkg/checkout
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          PKG_NAME="@${{ github.repository_owner }}/checkout"
+          if npm view "${PKG_NAME}@${VERSION}" version >/dev/null 2>&1; then
+            echo "::notice::${PKG_NAME}@${VERSION} is already published — skipping"
+          else
+            npm publish
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Package Core Artifacts & Generate Unified Checksums
+        id: artifacts
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          SDK_TARBALL="${{ steps.sdk.outputs.tarball }}"
+          CORE_TARBALL="economic-zone-core-${TAG}.tar.gz"
+          
+          # Create core protocol archive
+          tar -czf "$CORE_TARBALL" out/ script/ src/
+          
+          # Generate unified SHA-256 checksums file for all release assets
+          sha256sum "$CORE_TARBALL" "$SDK_TARBALL" abis.json abis.jsonl .gas-snapshot > CHECKSUMS-SHA256.txt
+          cat CHECKSUMS-SHA256.txt
+          
+          CORE_SHA=$(sha256sum "$CORE_TARBALL" | awk '{print $1}')
+          SDK_SHA=$(sha256sum "$SDK_TARBALL" | awk '{print $1}')
+          
+          echo "core_tarball=$CORE_TARBALL" >> "$GITHUB_OUTPUT"
+          echo "core_sha=$CORE_SHA" >> "$GITHUB_OUTPUT"
+          echo "sdk_sha=$SDK_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Create Unified GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          VERSION="${{ steps.version.outputs.version }}"
+          CORE_TARBALL="${{ steps.artifacts.outputs.core_tarball }}"
+          SDK_TARBALL="${{ steps.sdk.outputs.tarball }}"
+          CORE_SHA="${{ steps.artifacts.outputs.core_sha }}"
+          SDK_SHA="${{ steps.artifacts.outputs.sdk_sha }}"
+
+          gh release create "$TAG" \
+            "$CORE_TARBALL" \
+            "$SDK_TARBALL" \
+            "CHECKSUMS-SHA256.txt" \
+            "abis.json" \
+            "abis.jsonl" \
+            ".gas-snapshot" \
+            --title "Economic Zones Protocol & SDK ${TAG}" \
+            --notes "## Economic Zones Protocol & SDK ${TAG}
+
+          Sovereign On-Chain Economies with an Unbreachable Floor Price, AI Agent Micropayments (x402), SaaS Subscriptions, Liquid Staking, and Yield-Backed Treasury Bóvedas.
+
+          ---
+
+          ### 📦 TypeScript SDK Installation
+
+          Published to GitHub Packages:
+
+          \`\`\`bash
+          bun add @${{ github.repository_owner }}/checkout@${VERSION}
+          # or
+          npm install @${{ github.repository_owner }}/checkout@${VERSION}
+          \`\`\`
+
+          \`\`\`ts
+          import { ZoneCheckoutClient, ZoneClient } from \"@${{ github.repository_owner }}/checkout\";
+
+          const client = new ZoneCheckoutClient(\"0xSwapPayRouterAddress...\");
+          const payload = client.prepare1ClickPayment(
+            1n,             // projectId
+            100_000000n,    // 100 USDC in
+            50_000000000000000000n, // 50 HNY required
+            50n             // 0.5% max slippage
+          );
+          \`\`\`
+
+          ---
+
+          ### 🔒 Cryptographic Checksums (SHA-256)
+
+          | Artifact | SHA-256 Hash |
+          | :--- | :--- |
+          | \`$CORE_TARBALL\` | \`$CORE_SHA\` |
+          | \`$SDK_TARBALL\` | \`$SDK_SHA\` |
+
+          \`\`\`bash
+          # Verify integrity
+          sha256sum -c CHECKSUMS-SHA256.txt
+          \`\`\`
+
+          ---
+
+          ### 🏛️ Included Modules
+          - **Ethereum L1**: Augmented Bonding Curve ($HNY), Treasury Yield Vaults (ERC-4626), Floor Dripper, xHNY Lockbox (xERC20), EIP-4844 KZG Blob Verifier (0x0A).
+          - **Base L2**: 1-Click Drop-in Checkout (+1% Instant Cashback), Continuous Payroll Streaming, Revenue Splits with Auto-Stake, veHNY Savings Lockers.
+          - **Testing**: 60/60 passing Foundry suites (32k invariant fuzzing, 100% bank runs, live Base fork)."
